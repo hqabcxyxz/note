@@ -1,0 +1,79 @@
+{
+  "main": {
+    "id": "27e0d62d70348f45",
+    "type": "split",
+    "children": [
+      {
+        "id": "41c0dfffea4daf37",
+        "type": "leaf",
+        "active": true,
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "经典博文/From GAN to WGAN.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "cf4d4b3b70f111ce",
+    "type": "split",
+    "children": [
+      {
+        "id": "7db44e9ce58ba508",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3e273d53998a2ecb",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "3df92b6780a9d870",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "04b2c463eb8dcdb8",
+    "type": "split",
+    "children": [
+      {
+        "id": "5774513003370e9b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bd76656cd34fb7a2",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "经典博文/From GAN to WGAN.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "lastOpenFiles": [
+    "经典博文/From GAN to WGAN.md"
+  ]
+}
