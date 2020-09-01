@@ -135,8 +135,8 @@ The net architecture of VAEs is similar to that of AEs, with the difference that
 VAE的网络结构和AE类似,不同之处是VAE的编码器强制表征编码$z$服从某个先验概率分布$p(z)$.然后,解码器将从$p(z)$中采样得到$z$,然后生成新的类似真实数据.在VAE中,$q_\phi(z|x)$和$p_\theta(z|x)$分布代表编码器和生成器的条件分布.数据分布$p_\phi(x)$难以被解析法求解,因此引入来变分推理的方法来求解极大似然对数log$p_\phi(x)$:
 
 $$
-L(x) =\log{p_\phi(x)}-KL[q_\theta(z|x)||p_\phi(z|x)] \\
-    =E_{q_\phi(z|x)}[\log{p_\theta(x)}+\log{p_\theta(z|x)}-\log{q_\phi(z|x)}]   \tag{2} \\
+L(x) =\log{p_\phi(x)}-KL[q_\theta(z|x)||p_\phi(z|x)] \newline
+    =E_{q_\phi(z|x)}[\log{p_\theta(x)}+\log{p_\theta(z|x)}-\log{q_\phi(z|x)}]   \tag{2} \newline
     =-KL(q_\phi(z|x)||p_\theta(z))+E_{q_\phi(z|x)}[\log{p_\theta(x|z)}]
 $$
 
@@ -145,7 +145,7 @@ KLD is a similarity measure between two distributions. To estimate this maximum 
 KLD(KL散度)是衡量两个分布相似性的一种方法.为了估计这个极大似然,VAE需要最大化`evidence variational lower bound(ELBO)`$L(x)$.为了优化$q_\phi(z|x)$和$p_\theta(z)$的KLD,编码器将估计高斯分布$q_\phi(z|x)$的期望$u$和标准差$\sigma$.以下是两个分布的KLD的解析式子,其中$q_\phi(z|x)$和$p_\theta(z)$都服从高斯分布.为了优化公式(2),VAE将最小化输入和输出之间的重建误差.给定一个数据点$x\in{R^d}$,目标函数可以写成:
 
 $$
-L_{VAE}=L_{MSE}(x,G_\theta(z))+\lambda L_{KLD}(E_\phi(x))  \\
+L_{VAE}=L_{MSE}(x,G_\theta(z))+\lambda L_{KLD}(E_\phi(x))  \newline
 =L_{MSE}(x,x_r)+\lambda L_{KLD}(u,\sigma)  \tag{3}  
 $$
 
@@ -154,7 +154,7 @@ L_{MSE}(x,x_r)=||x-x_r||^2 \tag{4}
 $$
 
 $$
-L_{KLD}(u,\sigma)=KL(q_\phi(z|x)||p_\theta(z))  \\
+L_{KLD}(u,\sigma)=KL(q_\phi(z|x)||p_\theta(z))  \newline
                  =KL(N(z;u,\sigma^2)||N(z;0,I))
                  =\int{}
 $$
