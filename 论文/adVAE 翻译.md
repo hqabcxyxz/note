@@ -24,7 +24,7 @@ Recently, deep generative models have become increasingly popular in unsupervise
 
 ----
 
-1.Introduction
+## 1.Introduction
 
 Anomaly detection (or outlier detection) can be regarded as the task of identifying rare data items that differ from the majority of the data. Anomaly detection is applicable in a variety of domains, such as intrusion detection, fraud detection, fault detection,health monitoring, and security checking [1–5].Owing to the lack of labeled anomaly samples, there is alarge skew between normal and anomaly class distributions. Some attempts [6–8] use several imbalanced-learning methods to improve the performance of supervised anomaly detection models. Moreover, unsupervised models are more popular than supervised models in the anomaly detection field. Reference [9] reviewed machine-learning-based anomaly detection algorithms comprehensively.
 
@@ -63,7 +63,7 @@ The encoder can be trained to discriminate the original sample and its reconstru
 编码器可以被训练成可以判别原始数据和重建数据,但我们没有任何的异常隐编码来训练生成器.为了合成异常隐编码,我们提出来高斯异常假说来描述正常和异常隐空间的关系.Fig.1(a)描述我们的假设;异常和正常先验分布都是高斯分布且在隐空间上由重叠.这是一个脆弱但是合理的假设,因为高斯分布在自然界是普遍存在的.Fig.1(b)展示来本文自对抗机制的基本结构.编码器被训练来判别原始样本$x$和重建样本$x_r$,生成器则尝试区别由编码器编码的正常隐向量$z$和由$T$合成的异常样本$z_T$.这些被添加的新目标不仅使G和E有了判别能力,还引入来额外的正则化机制来防止模型过拟合.
 
 >![Fig 1](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200901183009.png)
-Figure 1: (a) Our assumption is that the normal data prior distribution is a Gaussian distribution close to $N(0,I)$, and the anomalous prior is another Gaussian distribution, whose mean and variance are unknown and different from the normal prior, with overlaps in the latent space. (b) This figure illustrates the basic structure of our self-adversarial mechanism. We propose additional discrimination objectives for both the encoder and the generator by adding two competitive relationships.$x$ and $z$ are normal items because of the anomaly-free training dataset.$x_r$ and $z_T$ can be regarded as anomalous item.G is trained to distinguish $z$ and $z_T$, and E tries to discern $x$ and $x_r$.
+Figure 1: (a) Our assumption is that the normal data prior distribution is a Gaussian distribution close to $N(0,I)$, and the anomalous prior is another Gaussian distribution, whose mean and variance are unknown and different from the normal prior, with overlaps in the latent space. (b) This figure illustrates the basic structure of our self-adversarial mechanism. We propose additional discrimination objectives for both the encoder and the generator by adding two competitive relationships.$x$ and $z$ are normal items because of the anomaly-free training dataset.$x_r$ and $z_T$ can be regarded as anomalous item.G is trained to distinguish $z$ and $z_T$, and E tries to discern $x$ and $x_r$.  
 图1:(a) 我们假设正常样本先验分布是一个接近$N(0,1)$的高斯分布,异常先验是另外一个高斯分布,其期望和方差未知且都和正常先验分布不一样,并且两者在隐空间中有重叠区域. (b) 本图展示来本文自对抗机制的大致结构.通过添加两个竞争关系,为编码器和生成器设定来额外的判别目标.$x$和$z$是正常样本.$x_r$和$z_T$被视为异常样本.G被训练来区分$z$和$z_T$,E尝试区分$x$和$x_r$
 
 Our training process can be divided into two steps:
@@ -90,7 +90,75 @@ Our main contributions are summarized as follows:
 4. 本文提出来一个高斯异常先验知识假说来描述异常隐向量的数据分布.此外,我们提出来一个高斯变换网络T来将这些先验知识融合到深度生成模型中.
 5. 决策的阈值是通过核密度估计(KDE)的方法来自动计算出来的,之前的工作常常忽略来自动学习阈值的重要性.
 
+----
+## 2.Preliminary
+### 2.1 Conventional Anomaly Detection  
+
+Anomaly detection methods can be broadly categorized into probabilistic, distance-based, boundary-basedand reconstruction-based.
+
+异常检测方法可以粗分为基于概率,基于距离,基于边界和基于重构的方法.
+
+(1) Probabilistic approach, such as GMM [27] and KDE [28], uses statistical methods to estimate the probability density function of the normal class. A data pointis defined as an anomaly if it has low probability density.
+
+(1)概率类方法,例如GMM[27]和KDE[28],使用统计方法来估计正常样本的概率密度函数.低概率密度的数据点被定义为异常点.
+
+(2) Distance-based approach has the assumption that normal data are tightly clustered, while anomaly data occur far from their nearest neighbours. These methods depend on the well-defined similarity measure between two data points. The basic distance-based methods are LOF [29] and its modification [30].
+
+(2) 距离类的方法假设正常样本是紧密聚集的,异常数据通常离它们较远.这类方法效果依赖于两类数据之间定义的相似性度量.基础的距离类方法有LOF[29]及其变体[30].
+
+(3) Boundary-based approach, mainly involving OCSVM [31] and SVDD [32], typically try to define a boundary around the normal class data. Whether the unknown data is an anomaly instance is determined by their location with respect to the boundary. 
+
+(3)边界类方法,典型的有OCSVM[31]和SVDD[32],尝试寻找出正常样本的边界.待测数据是否是异常数据取决于相对边界的位置.
+
+(4) Reconstruction-based approach assumes that anomalies are incompressible and thus cannot be effectively reconstructed from low-dimensional projections. In this category, PCA [33] and its variations [34, 35] are widely used, effective techniques to detect anomalies. Besides, AE and VAE basedmethods also belong to this category, which will be explained detailedly in the next two subsections.
+
+(4)基于重构的方法假设异常是不可压缩的,因此无法从低维投影中有效的重建出来.PCA[33]和其变体[34,35]是被广泛应用且有效的技术.除此之外,AE和VAE的方法也属于这类方法,详见下两小节.
+
+### 2.2 Autoencoder-based Anomaly Detection
+
+An AE, which is composed of an encoder and a decoder, is a neural network used to learn reconstructions as close as possible to its original inputs. Given a datapoint $x∈R^d$($d$ is the dimension of $x$), the loss function can be viewed as minimizing the reconstruction error between the training data and the outputs of the AE, and $\theta$ and $\phi$ denote the hidden parameters of the encoder E and the decoder G:
+
+AE由编码器和解码器组成,是一个用于学习重建尽量接近原始输入的神经网络.给定一个数据点$x\in{R^d}$($d$是$x$的维数),损失函数可以被视为最小化训练数据和AE输出的重建误差,$\theta$和$\phi$被定义为编码器E和解码器G的隐藏参数:
+
+$$
+L_{AE}(x,\phi,\theta)=\parallel x-G_\theta(E_\phi(x)) \parallel^2     \tag{1.1}
+$$
+
+After training, the reconstruction error of each test data will be regarded as the anomaly score. The data with a high anomaly score will be defined as anomalies,because only the normal data are used to train the AE.The AE will reconstruct normal data very well, while failing to do so with anomalous data that the AE has not encountered.
+
+经过训练后,将每个测试数据的重构误差作为异常分数.由于只有正常数据被用于AE的训练,所以有较高重构误差的数据可以被视为异常点.AE可以很好的重构正常数据,而异常数据则无法很好的重构.
+
+### 2.3 VAE-based Anomaly Detection
+
+The net architecture of VAEs is similar to that of AEs, with the difference that the encoder of VAEs forces the representation code $z$ to obey some type of prior probability distribution $p(z)$ (e.g.,$N(0,I)$). Then, the decoder generates new realistic data with code $z$ sampled from $p(z)$. In VAEs, both the encoder and decoder conditional distributions are denoted as $q_\phi(z|x)$ and $p_\theta(z|x)$. The data distribution $p_\theta(x)$ is intractable by analytic methods, and thus variational inference methods are introduced to solve the maximum likelihood log $p_\theta(x)$:
+
+VAE的网络结构和AE类似,不同之处是VAE的编码器强制表征编码$z$服从某个先验概率分布$p(z)$.然后,解码器将从$p(z)$中采样得到$z$,然后生成新的类似真实数据.在VAE中,$q_\phi(z|x)$和$p_\theta(z|x)$分布代表编码器和生成器的条件分布.数据分布$p_\phi(x)$难以被解析法求解,因此引入来变分推理的方法来求解极大似然对数log$p_\phi(x)$:
+
+$$
+L(x) =\log{p_\phi(x)}-KL[q_\theta(z|x)||p_\phi(z|x)] \\
+    =E_{q_\phi(z|x)}[\log{p_\theta(x)}+\log{p_\theta(z|x)}-\log{q_\phi(z|x)}]   \tag{2} \\
+    =-KL(q_\phi(z|x)||p_\theta(z))+E_{q_\phi(z|x)}[\log{p_\theta(x|z)}]
+$$
+
+KLD is a similarity measure between two distributions. To estimate this maximum likelihood, VAE needs to maximize the evidence variational lower bound(ELBO)$L(x)$. To optimize the KLD betweenq $q_\phi(z|x)$ and $p_θ(z)$, the encoder estimates the parameter vectorsof the Gaussian distribution $q_\phi(z|x)$: mean $μ$ and standard deviation $σ$. There is an analytical expression for their KLD, because bothqφ(z|x) andpθ(z) are Gaussian.To optimize the second term of equation (2), VAEs min-imize the reconstruction errors between the inputs andthe outputs. Given a datapointx∈Rd, the objectivefunction can be rewritten as
+
+KLD(KL散度)是衡量两个分布相似性的一种方法.为了估计这个极大似然,VAE需要最大化`evidence variational lower bound(ELBO)`$L(x)$.为了优化$q_\phi(z|x)$和$p_\theta(z)$的KLD,编码器将估计高斯分布$q_\phi(z|x)$的期望$u$和标准差$\sigma$.以下是两个分布的KLD的解析式子,其中$q_\phi(z|x)$和$p_\theta(z)$都服从高斯分布.为了优化公式(2),VAE将最小化输入和输出之间的重建误差.给定一个数据点$x\in{R^d}$,目标函数可以写成:
+
+$$
+L_{VAE}=L_{MSE}(x,G_\theta(z))+\lambda L_{KLD}(E_\phi(x))  \\
+=L_{MSE}(x,x_r)+\lambda L_{KLD}(u,\sigma)  \tag{3}  
+$$
+
+$$
+L_{MSE}(x,x_r)=||x-x_r||^2 \tag{4}
+$$
+
+$$
+L_{KLD}(u,\sigma)=KL(q_\phi(z|x)||p_\theta(z))  \\
+                 =KL(N(z;u,\sigma^2)||N(z;0,I))
+                 =\int{}
+$$
 
 
-
-
+The first termLMS E(x,xr) is the mean squared er-ror (MSE) between the inputs and their reconstructions.The second termLK LD(μ,σ) regularizes the encoder byencouraging the approximate posteriorqφ(z|x) to matchthe priorp(z). To hold the tradeoffbetween these twotargets, each KLD target term is multiplied by a scalinghyperparameterλ.
+AEs define the reconstruction error as the anomalyscore in the test phase, whereas VAEs use the recon-struction probability [13] to detect outliers. To estimatethe probabilistic anomaly score, VAEs samplezaccord-ing to the priorpθ(z) forLtimes and calculate the aver-age reconstruction error as the reconstruction probabil-ity. This is why VAEs work more robustly than tradi-tional AEs in the anomaly detection domain.
