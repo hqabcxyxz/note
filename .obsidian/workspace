@@ -10,7 +10,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "经典博文/From GAN to WGAN.md",
+            "file": "论文/adVAE 翻译.md",
             "mode": "source"
           }
         }
@@ -62,7 +62,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "经典博文/From GAN to WGAN.md"
+                "file": "论文/adVAE 翻译.md"
               }
             }
           }
@@ -74,6 +74,8 @@
     "collapsed": true
   },
   "lastOpenFiles": [
+    "论文/adVAE 翻译.md",
+    "deep generative.md",
     "经典博文/From GAN to WGAN.md"
   ]
 }

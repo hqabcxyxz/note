@@ -1,5 +1,5 @@
 {
-  "theme": "obsidian",
+  "theme": "moonstone",
   "pluginEnabledStatus": {
     "file-explorer": true,
     "global-search": true,
@@ -7,7 +7,12 @@
     "graph": true,
     "backlink": true,
     "command-palette": true,
-    "markdown-importer": true,
-    "word-count": true
-  }
+    "markdown-importer": false,
+    "word-count": true,
+    "custom-css": true,
+    "open-with-default-app": true
+  },
+  "vimMode": true,
+  "spellcheck": true,
+  "promptDelete": false
 }
