@@ -135,9 +135,9 @@ The net architecture of VAEs is similar to that of AEs, with the difference that
 VAE的网络结构和AE类似,不同之处是VAE的编码器强制表征编码$z$服从某个先验概率分布$p(z)$.然后,解码器将从$p(z)$中采样得到$z$,然后生成新的类似真实数据.在VAE中,$q_\phi(z|x)$和$p_\theta(z|x)$分布代表编码器和生成器的条件分布.数据分布$p_\phi(x)$难以被解析法求解,因此引入来变分推理的方法来求解极大似然对数log$p_\phi(x)$:
 
 $$
-L(x) =\log{p_\phi(x)}-KL[q_\theta(z|x)||p_\phi(z|x)] \newline
-    =E_{q_\phi(z|x)}[\log{p_\theta(x)}+\log{p_\theta(z|x)}-\log{q_\phi(z|x)}]   \tag{2} \newline
-    =-KL(q_\phi(z|x)||p_\theta(z))+E_{q_\phi(z|x)}[\log{p_\theta(x|z)}]
+L(x) =\log{p_\phi(x)}-KL[q_\theta(z|x)||p_\phi(z|x)] 
+\newline =E_{q_\phi(z|x)}[\log{p_\theta(x)}+\log{p_\theta(z|x)}-\log{q_\phi(z|x)}]   \tag{2}
+\newline=-KL(q_\phi(z|x)||p_\theta(z))+E_{q_\phi(z|x)}[\log{p_\theta(x|z)}]
 $$
 
 KLD is a similarity measure between two distributions. To estimate this maximum likelihood, VAE needs to maximize the evidence variational lower bound(ELBO)$L(x)$. To optimize the KLD betweenq $q_\phi(z|x)$ and $p_θ(z)$, the encoder estimates the parameter vectorsof the Gaussian distribution $q_\phi(z|x)$: mean $μ$ and standard deviation $σ$. There is an analytical expression for their KLD, because bothqφ(z|x) andpθ(z) are Gaussian.To optimize the second term of equation (2), VAEs min-imize the reconstruction errors between the inputs andthe outputs. Given a datapointx∈Rd, the objectivefunction can be rewritten as
