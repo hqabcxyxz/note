@@ -10,7 +10,9 @@
     "markdown-importer": false,
     "word-count": true,
     "custom-css": true,
-    "open-with-default-app": true
+    "open-with-default-app": true,
+    "page-preview": true,
+    "outline": true
   },
   "vimMode": true,
   "spellcheck": true,

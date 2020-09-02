@@ -160,5 +160,27 @@ L_{KLD}(u,\sigma)=KL(q_\phi(z|x)||p_\theta(z))  \\
 $$
 
 
-The first termLMS E(x,xr) is the mean squared er-ror (MSE) between the inputs and their reconstructions.The second termLK LD(μ,σ) regularizes the encoder byencouraging the approximate posteriorqφ(z|x) to matchthe priorp(z). To hold the tradeoffbetween these twotargets, each KLD target term is multiplied by a scalinghyperparameterλ.
-AEs define the reconstruction error as the anomalyscore in the test phase, whereas VAEs use the recon-struction probability [13] to detect outliers. To estimatethe probabilistic anomaly score, VAEs samplezaccord-ing to the priorpθ(z) forLtimes and calculate the aver-age reconstruction error as the reconstruction probabil-ity. This is why VAEs work more robustly than tradi-tional AEs in the anomaly detection domain.
+The first term $L_{MSE}(x,x_r)$ is the mean squared error (MSE) between the inputs and their reconstructions.The second term $L_{KLD}(μ,σ)$ regularizes the encoder by encouraging the approximate posterior $q_\phi(z|x)$ to match the prior $p(z)$. To hold the trade off between these two targets, each KLD target term is multiplied by a scaling hyper-parameter $\lambda$.
+
+$L_{MSE}(x,x_r)$是输入和重建的平方差,$L_{KLD}(u,\sigma)$是通过使$q_\phi(z|x)$逼近$p(z)$来对编码器进行正则的.通过对每个KLD乘上一个权重超参$\lambda$来平衡这两个目标.
+
+AEs define the reconstruction error as the anomaly score in the test phase, whereas VAEs use the reconstruction probability [13] to detect outliers. To estimate the probabilistic anomaly score, VAEs sample $z$ according to the prior $p_θ(z)$ for $L$ times and calculate the average reconstruction error as the reconstruction probability. This is why VAEs work more robustly than traditional AEs in the anomaly detection domain.
+
+AE将重构误差定义为测试阶段的异常分数,而VAE则使用重构概率[13]来检测离群点.为了估计异常分数概率,VAE从先验$p_\theta(z)$中采样$L$次来得到样本$z$,并计算平均重构误差来作为重构概率.这就是为何VAE比传统AE在异常检测领域更加鲁棒的原因.
+
+### 2.4 GAN-based Anomaly Detection
+Since GANs [12] were first proposed in 2014, GANshave  become  increasingly  popular  and  have  been  ap-plied for diverse tasks.  A GAN model comprises twocomponents,  which  contest  with  each  other  in  a  cat-and-mouse game, called the generator and discrimina-tor. The generator creates samples that resemble the realdata, while the discriminator tries to recognize the fake samples from the real ones.  The generator of a GANsynthesizes  informative  potential  outliers  to  assist  thediscriminator  in  describing  a  boundary  that  can  sepa-rate outliers from normal data effectively [24].   Whena sample is input into a trained discriminator, the out-put of the discriminator is defined as the anomaly score.However, suffering from the mode collapsing problem,GANs  usually  could  not  learn  the  boundaries  of  nor-mal data well, which reduces the effectiveness of GANsin anomaly detection applications.  To solve this prob-lem, [24] propose MOGAAL and suggest stopping op-timizing the generator before convergence and expand-ing  the  network  structure  from  a  single  generator  tomultiple generators with different objectives.  In addi-tion, WGAN-GP [36], one of the most advanced GANframeworks,  proposes a Wasserstein distance and gra-dient  penalty  trick  to  avoid  mode  collapsing.   In  ourexperiments, we also compared the anomaly detectionperformance between a plain GAN and WGAN-GP.
+
+## 3.Self-adversarisal Variational Autoencoder
+
+n    this    section,a    self-adversarialVariationalAutoencoder  (adVAE)  for  anomaly  detection  is  pro-posed.   To customize plain VAE to fit anomaly detec-tion  tasks,  we  propose  the  assumption  of  a  Gaussiananomaly prior and introduce the self-adversarial mech-anism into traditional VAE. The proposed method con-sists of three modules:  an encoder netE, a generativenetG, and a Gaussian transformer netT.
+
+There are two competitive relationships in the train-ing  phase  of  our  method:  (1)  To  generate  a  potentialanomalous  prior  distribution  and  enhance  the  genera-tor’s ability to discriminate between normal and anoma-lous priors, we train the Gaussian transformerTand thegeneratorGwith adversarial objectives simultaneously.(2) To produce more realistic samples in a competitivemanner and make the encoder learn to discern, we trainthe generator and the encoder analogously to the gener-ator and discriminator in GANs.
+
+According to equation (3), there are two componentsin the objective function of VAEs:LMS EandLK LD. Thecost function of adVAE is a modified combination ob-jective of these two terms. In the following, we describethe training phase in subsections 3.1 to 3.3 and subsec-tions 3.4 to 3.6 address the testing phase.
+
+### 3.1 Training Step 1: Competition between T and G
+The  generator  of  plain  VAE  is  often  so  powerfulthat  it  maps  all  the  Gaussian  latent  code  to  the  high-dimensional  data  space,  even  if  the  latent  code  is  encoded from anomalous samples.  Through the competi-tion betweenTandG, we introduce an effective regu-larization into the generator.
+Our  anomalous  prior  assumption  suggests  that  it  isdifficult  for  the  generator  of  plain  VAE  to  distinguishthe normal and the anomalous latent code, because theyhave overlaps in the latent space. To solve this problem,we synthesize anomalous latent variables and make thegenerator discriminate the anomalous from the normallatent code.   As shown in Figure 2 (a),  we freeze theweights ofEand updateGandTin this training step.The Gaussian transformerTreceives the normal Gaus-sian latent variableszencoded from the normal trainingsamples as the inputs and transformszto the anomalousGaussian latent variableszTwith different meanμTandstandard deviationσT.Taims at reducing the KLD be-tween{z;μ,σ}and{zT;μT,σT}, andGtries to generateas different as possible samples from such two similarlatent codes
+
+Given a datapointx∈Rd, the objective function in his competition process can be defined as
