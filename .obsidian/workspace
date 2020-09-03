@@ -16,7 +16,7 @@
         }
       },
       {
-        "id": "2cb3800a5c57cc07",
+        "id": "8cb72d788d3ebda6",
         "type": "leaf",
         "state": {
           "type": "markdown",
@@ -97,6 +97,7 @@
   },
   "lastOpenFiles": [
     "论文/adVAE 翻译.md",
+    "核密度估计.md",
     "Untitled.md",
     "deep generative.md",
     "经典博文/From GAN to WGAN.md"
