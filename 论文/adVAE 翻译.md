@@ -377,14 +377,22 @@ Part II is simple and easy to understand. The anomaly score $s_{new}$ of a new s
 
 ## 4.Experiments
 ### 4.1 Datasets
-Most previous works used image datasets to test theiranomaly detection models.  To eliminate the impact of different convolutional structures and other image trickson the test performance, we chose five publicly availableand broadly used tabular anomaly detection datasets toevaluate our adVAE model.  All the dataset characteris-tics are summarized in Table 1.  For each dataset, 80%of the normal data were used for the training phase, andthen the remaining 20% and all the outliers were usedfor testing. More details about the datasets can be foundin their references or our [Github repository](https://github.com/WangXuhongCN/adVAE).
+Most previous works used image datasets to test their anomaly detection models.  To eliminate the impact of different convolutional structures and other image tricks on the test performance, we chose five publicly available and broadly used tabular anomaly detection datasets to evaluate our adVAE model.  All the dataset characteristics are summarized in Table 1.  For each dataset, 80% of the normal data were used for the training phase, and then the remaining 20% and all the outliers were used for testing. More details about the datasets can be found in their references or our [Github repository](https://github.com/WangXuhongCN/adVAE).
+
+过去很多工作都是在图像数据集上测试异常检测算法。为了消除不同卷积结构和其他图像的技巧对测试性能的影响，本文选了5个公开的表格异常检测数据集来评价我们的adVAE模型。表1总结了所有数据集的特征。对于每个数据集，使用80%的正常样本来进行训练，剩余20%的正常样本和所有的离群样本都被用于测试。更多的关于数据集的细节参见[Github](https://github.com/WangXuhongCN/adVAE)。
 
 ### 4.2 Evaluation Metric
-The  anomaly  detection  community  defines  anoma-lous samples as positive and defines normal samples asnegative, hence the anomaly detection tasks can also beregarded  as  a  two-class  classification  problem  with  alarge skew in class distribution.  For the evaluation ofa two-class classifier, the metrics are divided into twocategories; one category is defined at a single threshold,and the other category is defined at all possible thresh-olds.
+The  anomaly  detection  community  defines  anomalous samples as positive and defines normal samples as negative, hence the anomaly detection tasks can also be regarded  as  a  two-class  classification  problem  with  a large skew in class distribution.  For the evaluation of a two-class classifier, the metrics are divided into two categories; one category is defined at a single threshold,and the other category is defined at all possible thresholds.
 
-**Metrics at a single threshold.** Accuracy, precision,recall, and the F1 score are the common metrics to eval-uate models performance at a single threshold. Becausethe class distribution is skew, accuracy is not a suitablemetric for anomaly detection model evaluation.
+在异常检测中通常定义异常样本为正正常样本为负，因此异常检测任务也可被视为是一个类分布差距极大的二分类任务。针对评价二分类分类器，评价方法可以被分为两类；一类是仅在单个阈值上定义，另一类是在所有可能的阈值上都定义。
 
-High precision means the fewer chances of misjudg-ing  normal  data,  and  a  high  recall  means  the  fewerchances of models missing alarming outliers.  Even ifmodels  predict  a  normal  sample  as  an  outlier,  peoplecan still correct the judgment of the model through ex-pert knowledge, because the anomalous samples are ofsmall quantity.  However, if models miss alarming out-liers,  we  cannot  find  anomalous  data  in  such  a  hugedataset.  Thus, precision is not as crucial as recall.  TheF1 score is the harmonic average of precision and re-call. Therefore, we adopt recall and the F1 score as themetrics for comparing at a single threshold.
+**Metrics at a single threshold.** Accuracy, precision,recall, and the F1 score are the common metrics to evaluate models performance at a single threshold. Because the class distribution is skew, accuracy is not a suitable metric for anomaly detection model evaluation.
+
+**在单一阈值上衡量。** 精确度，准确度，召回率，F1分数是在单一阈值上衡量一个模型性能的常用手段。因为类分布是极端不平衡的，因此精确度不适合用来衡量。
+
+High precision means the fewer chances of misjudging  normal  data,  and  a  high  recall  means  the  fewer chances of models missing alarming outliers.  Even if models  predict  a  normal  sample  as  an  outlier,  people can still correct the judgment of the model through expert knowledge, because the anomalous samples are of small quantity.  However, if models miss alarming outliers,  we  cannot  find  anomalous  data  in  such  a  huge dataset.  Thus, precision is not as crucial as recall.  The F1 score is the harmonic average of precision and recall. Therefore, we adopt recall and the F1 score as the metrics for comparing at a single threshold.
+
+高准确度表示对于正常样本的误判更少，高召回率表示对于漏检离群点的几率更小。尽管一个模型将正常样本预测为离群点，但由于异常样本数量极少，人们依然可以通过先验知识来纠正模型的结果。但是，一旦模型漏检了一个离群点，我们将很难在从海量的数据中找到异常样本了。因此准确度不及召回率重要。而F1参数是用来调节二者平衡的。这里我们使用召回率和F1分数来作为模型在单一阈值下的衡量标准。
 
 **Metrics at all possible thresholds.** The anomaly de-tection community often uses receiver operator charac-teristic (ROC) and precision–recall (PR) curves, which aggregate over all possible decision thresholds, to eval-uate the predictive performance of each method. Whenthe  class  distribution  is  close  to  being  uniform,  ROCcurves  have  many  desirable  properties.   However,  be-cause anomaly detection tasks always have a large skewin the class distribution, PR curves give a more accuratepicture of an algorithm’s performance [45].
 
