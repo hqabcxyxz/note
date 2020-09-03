@@ -243,7 +243,50 @@ $$
 
 $[·]^+=max(0,·)$,$m_x$ is a positive margin of the MSE target, and $m_z$ is a positive margin of the KLD target.The aim is to hold the corresponding target term below the margin value for most of the time.$L_{G_z}$ is the objective for the data flow of $z$, and $L_{G_{z_T}}$ is the objective for the pipeline of $z_T$.
 
+==$[·]^+=max(0,·)$,$m_x$是MSE的正边界,$m_z$是KLD的正边界.这样做的目的是让对应的目标项在多数时候低于边界值.$L_{G_z}$是数据流$z$的优化目标,$L_{G_{z_T}}$是数据流$z_T$的优化目标.==
 
-$L_T$ and $L_G$ are two adversarial objectives, and the total objective function in this training step is the sum of the two:$L_T+λL_G$. Objective $L_T$ encourages T to mislead G by synthesizing T similar to $z$, such that G cannot distinguish them. Objective $L_G$ forces the generator to distinguish between $z$ and $z_T$.T hopes that $z_T$ is close to $z$, whereas G hopes that $z_T$ is farther away from $z$. After iterative learning,T and G will reach a balance.Twill generate anomalous latent variables close to the normal latent variables, and the generator will distinguish them by different reconstruction errors. Although the anomalous latent variables synthesized by T are not necessarily real, it is helpful for the models as long as they try to identify the outliers.
+$L_T$ and $L_G$ are two adversarial objectives, and the total objective function in this training step is the sum of the two:$L_T+λL_G$. Objective $L_T$ encourages T to mislead G by synthesizing $z_T$ similar to $z$, such that G cannot distinguish them. Objective $L_G$ forces the generator to distinguish between $z$ and $z_T$.T hopes that $z_T$ is close to $z$, whereas G hopes that $z_T$ is farther away from $z$. After iterative learning,T and G will reach a balance.T will generate anomalous latent variables close to the normal latent variables, and the generator will distinguish them by different reconstruction errors. Although the anomalous latent variables synthesized by T are not necessarily real, it is helpful for the models as long as they try to identify the outliers.
+
+$L_T$和$L_G$是竞争关系,他俩的和$L_T+\lambda L_G$是训练阶段的总的损失函数.$L_T$通过生成和$z$相似的$z_T$使T来尽力蒙骗G.$L_G$则强迫G区分$z$和$z_T$.T希望$z_T$尽量接近$z$而G希望$z_T$和$z$差异尽量大.在经过迭代学习之后,T和G应达到一个平衡.T将可以生成和正常隐变量相似的异常隐变量,生成器则可以通过重建误差来分辨它们.尽管T合成的异常隐变量不是真的数据,但是对于模型识别离群点还是很有帮助的.
 
 Because the updating of E will affect the balance of T and G, we freeze the weights of E when training T and G. If we do not do this, it will be an objective of three networks’ equilibrium, which is extremely difficult to optimize
+
+由于更新E将影响T和G的平衡,因此我们将在训练T和G时冻结E的权重.若不这么做,很难同时优化这三个网络.
+
+### 3.2 Training Step 2: Training E like a Discriminator
+In the first training step demonstrated in the previous subsection, we freeze the weights of E. Instead, as shown in Figure 2 (b), we now freeze the weights of T and G and update the encoder E. The encoder not only attempts to project the data samples $x$ to Gaussian latent variables $z$ like the original VAE, but also works like a discriminator in GANs. The objective of the encoder is as follows:
+
+之前章节展示来训练的第一步,通过冻结E的权重.如Fig2(b)显示,现在我们将冻结T和G并更新E.编码器不仅尝试像普通VAE那种从高斯隐变量$z$中产生样本$x$,同时还作为GAN的判别器.其目标函数如下:
+$$
+L_E=L_{MSE}(x,G(z))+\lambda L_{KLD}(E(x)) \\
++\gamma [m_z-L_{KLD}(E(G(z)))]^+ \\
++\gamma [m_z-L_{KLD}(E(G(z_T)))]^+   \\
+$$
+$$
+=L_{MSE}(x,x_r)+\lambda L_{KLD}(u,\sigma) \\
++\gamma [m_z-L_{KLD}(u_r,\sigma_r)]^+ \\
++\gamma [m_z-L_{KLD}(u_{Tr},\sigma_{Tr})]^+  \tag{10}
+$$
+
+The first two terms of Equation 10 are the objective function of plain VAE. The encoder is trained to encode the inputs as close to the prior distribution when the inputs are from the training dataset. The last two terms are the discriminating loss we proposed. The encoder is prevented from mapping the reconstructions of training data to the latent code of the prior distribution
+
+公式10的前两项是普通VAE的目标函数.编码器使输入编码尽量接近先验分布.后两项判别损失是本文提出的.防止编码器将训练数据的重构映射到先验分布的隐编码.
+
+The objective $L_E$ provides the encoder with the ability to discriminate whether the input is normal because the encoder is encouraged to discover differences between the training samples (normal) and their reconstructions (anomalous). It is worth mentioning that the encoder with discriminating ability also helps the generator distinguish between the normal and the anomalous latent code.
+
+目标$L_E$使得编码器能够分辨输入是否是正常的,这是由于编码器被促使发现训练数据(正常)和它们重建(异常)的.另外,具有分辨能力的编码器还有助于区分正常和异常的隐编码.
+![](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200903175845.png)
+
+### 3.3 Alternating between the Above Two Steps
+As described in Algorithm 1, we train alternatively between the above two steps in a mini-batch iteration.  These two steps are repeated until convergence.$detach(·)$ indicates that the back propagation of the gradients is stopped at this point.
+
+如算法1所示,我们在一次小批量迭代中交替执行以上两步,直到拟合.$detach(·)$表示在该点的时候停止梯度的反传.
+
+In  the  first  training  step,  the  Gaussian  transformerconverts normal latent variables into anomalous latentvariables.  At the same time, the generator is trained togenerate realistic-like samples when the latent variablesare normal and to synthesize a low-quality reconstruc-tion when they are not normal.  It offers the generatorthe  ability  to  distinguish  between  the  normal  and  theanomalous latent variables.  In the second training step,the encoder not only maps the samples to the prior latentdistribution, but also attempts to distinguish between thereal dataxand generated samplesxr.
+
+Importantly, we introduce the competition ofEandGinto our adVAE model by training alternatively between these two steps.  Analogously to GANs, the generatoris trained to fool the encoder in training step 1, and theencoder is encouraged to discriminate the samples gen-erated by the generator in step 2.  In addition to bene-fitting from adversarial alternative learning as in GANs,the encoder and generator models will also learn jointlyfor the given training data to maintain the advantages ofVAEs.
+
+### 3.4 Anomaly Score
+As  demonstrated  in  Figure  2  (c),  only  the  genera-tor  and  the  encoder  are  used  in  the  testing  phase,  asin  a  traditional  VAE.  Given  a  test  data  pointx∈Rdas  the  input,  the  encoder  estimates  the  parameters  ofthe  latent  Gaussian  variablesμandσas  the  output.Then,  the  reparameterization  trick  is  used  to  samplez={z(1),z(2),...,z(L)}according to the latent distributionN(μ,σ2), i.e.,z(l)=μ+σε(l), whereε∼N(0,I) andl=1,2,...L.Lis set to 1000 in this work and used toimprove the robustness of adVAE’s performance.  Thegenerator receivesz(l)as the input and outputs the re-constructionx(l)r∈Rd.
+
+The error between the inputsxand their average re-construction∑Ll=1x(l)rreflects the deviation between thetesting data and the normal data distribution learned byadVAE,  such  that  the  anomaly  score  of  a  mini-batchdatax∈Rn×d(nis the batch size) is defined as follows:

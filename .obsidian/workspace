@@ -4,9 +4,8 @@
     "type": "split",
     "children": [
       {
-        "id": "41c0dfffea4daf37",
+        "id": "2a630ae978a0c2e1",
         "type": "leaf",
-        "dimension": 48.96825396825397,
         "active": true,
         "state": {
           "type": "markdown",
@@ -17,9 +16,8 @@
         }
       },
       {
-        "id": "2a630ae978a0c2e1",
+        "id": "2cb3800a5c57cc07",
         "type": "leaf",
-        "dimension": 51.031746031746025,
         "state": {
           "type": "markdown",
           "state": {
@@ -59,7 +57,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "04b2c463eb8dcdb8",
@@ -98,6 +97,7 @@
   },
   "lastOpenFiles": [
     "论文/adVAE 翻译.md",
+    "Untitled.md",
     "deep generative.md",
     "经典博文/From GAN to WGAN.md"
   ]
