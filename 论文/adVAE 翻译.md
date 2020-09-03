@@ -145,7 +145,9 @@ KLD is a similarity measure between two distributions. To estimate this maximum 
 KLD(KL散度)是衡量两个分布相似性的一种方法.为了估计这个极大似然,VAE需要最大化`evidence variational lower bound(ELBO)`$L(x)$.为了优化$q_\phi(z|x)$和$p_\theta(z)$的KLD,编码器将估计高斯分布$q_\phi(z|x)$的期望$u$和标准差$\sigma$.以下是两个分布的KLD的解析式子,其中$q_\phi(z|x)$和$p_\theta(z)$都服从高斯分布.为了优化公式(2),VAE将最小化输入和输出之间的重建误差.给定一个数据点$x\in{R^d}$,目标函数可以写成:
 
 $$
-L_{VAE}=L_{MSE}(x,G_\theta(z))+\lambda L_{KLD}(E_\phi(x))  \\
+L_{VAE}=L_{MSE}(x,G_\theta(z))+\lambda L_{KLD}(E_\phi(x))
+$$
+$$
 =L_{MSE}(x,x_r)+\lambda L_{KLD}(u,\sigma)  \tag{3}  
 $$
 
@@ -154,9 +156,16 @@ L_{MSE}(x,x_r)=||x-x_r||^2 \tag{4}
 $$
 
 $$
-L_{KLD}(u,\sigma)=KL(q_\phi(z|x)||p_\theta(z))  \\
-                 =KL(N(z;u,\sigma^2)||N(z;0,I))
-                 =\int{}
+L_{KLD}(u,\sigma)=KL(q_\phi(z|x)||p_\theta(z))
+$$
+$$
+=KL(N(z;u,\sigma^2)||N(z;0,I))
+$$
+$$
+=\int{N(z;u,\sigma^2)\log{\frac{N(z;u,\sigma^2)}{N(z;0,I)}}\mathrm{d}z}    \tag{5}
+$$
+$$
+=\frac{1}{2}(1+\log{\sigma^2}-u^2-\sigma^2)
 $$
 
 
@@ -169,18 +178,72 @@ AEs define the reconstruction error as the anomaly score in the test phase, wher
 AE将重构误差定义为测试阶段的异常分数,而VAE则使用重构概率[13]来检测离群点.为了估计异常分数概率,VAE从先验$p_\theta(z)$中采样$L$次来得到样本$z$,并计算平均重构误差来作为重构概率.这就是为何VAE比传统AE在异常检测领域更加鲁棒的原因.
 
 ### 2.4 GAN-based Anomaly Detection
-Since GANs [12] were first proposed in 2014, GANshave  become  increasingly  popular  and  have  been  ap-plied for diverse tasks.  A GAN model comprises twocomponents,  which  contest  with  each  other  in  a  cat-and-mouse game, called the generator and discrimina-tor. The generator creates samples that resemble the realdata, while the discriminator tries to recognize the fake samples from the real ones.  The generator of a GANsynthesizes  informative  potential  outliers  to  assist  thediscriminator  in  describing  a  boundary  that  can  sepa-rate outliers from normal data effectively [24].   Whena sample is input into a trained discriminator, the out-put of the discriminator is defined as the anomaly score.However, suffering from the mode collapsing problem,GANs  usually  could  not  learn  the  boundaries  of  nor-mal data well, which reduces the effectiveness of GANsin anomaly detection applications.  To solve this prob-lem, [24] propose MOGAAL and suggest stopping op-timizing the generator before convergence and expand-ing  the  network  structure  from  a  single  generator  tomultiple generators with different objectives.  In addi-tion, WGAN-GP [36], one of the most advanced GANframeworks,  proposes a Wasserstein distance and gra-dient  penalty  trick  to  avoid  mode  collapsing.   In  ourexperiments, we also compared the anomaly detectionperformance between a plain GAN and WGAN-GP.
+Since GANs [12] were first proposed in 2014, GANs have become increasingly popular and have been applied for diverse tasks. A GAN model comprises two components, which contest with each other in a cat-and-mouse game, called the generator and discriminator. The generator creates samples that resemble the real data, while the discriminator tries to recognize the fake samples from the real ones. The generator of a GAN synthesizes informative potential outliers to assist the discriminator in describing a boundary that can separate outliers from normal data effectively [24]. When a sample is input into a trained discriminator, the output of the discriminator is defined as the anomaly score.However, suffering from the mode collapsing problem,GANs usually could not learn the boundaries of normal data well, which reduces the effectiveness of GANs in anomaly detection applications. To solve this problem, [24] propose MOGAAL and suggest stopping optimizing the generator before convergence and expanding the network structure from a single generator to multiple generators with different objectives. In addition, WGAN-GP [36], one of the most advanced GAN frameworks, proposes a Wasserstein distance and gradient penalty trick to avoid mode collapsing. Is our experiments, we also compared the anomaly detection performance between a plain GAN and WGAN-GP.
+
+自2014年GAN[12]出世,GAN已变得愈加流行,并在各种任务中被应用.GAN包含了两个像进行猫鼠游戏一样的模块,生成器和判别器.生成器生成和真实数据相似的样本,判别器则尽力取区分真假样本.生成器合成来潜在离群点的信息,这可以帮助判别器更加有效的找到正常数据和离群数据的边界[24].样本在判别器的输出被定义为异常分数.然而由于存在模式崩溃的问题,GAN经常无法很好的学习到正常样本的变价,导致其效果不尽人意.为了解决这个问题,文献[24]提出来MOGAAL,建议在生成器拟合前停止优化并将网络结构从单个生成器扩展到多个带有不同优化目标的生成器.此外,WGAN-GP[36]提出Wasserstein距离和梯度惩罚策略来规避模式崩溃.在本文实验中,我们比较了普通GAN和WGAN-GP在异常检测中的性能.
 
 ## 3.Self-adversarisal Variational Autoencoder
 
-n    this    section,a    self-adversarialVariationalAutoencoder  (adVAE)  for  anomaly  detection  is  pro-posed.   To customize plain VAE to fit anomaly detec-tion  tasks,  we  propose  the  assumption  of  a  Gaussiananomaly prior and introduce the self-adversarial mech-anism into traditional VAE. The proposed method con-sists of three modules:  an encoder netE, a generativenetG, and a Gaussian transformer netT.
+In this section,a self-adversarial Variational Autoencoder (adVAE) for anomaly detection is pro-posed. To customize plain VAE to fit anomaly detection tasks, we propose the assumption of a Gaussian anomaly prior and introduce the self-adversarial mechanism into traditional VAE. The proposed method consists of three modules: an encoder net E, a generative net G, and a Gaussian transformer net T.
 
-There are two competitive relationships in the train-ing  phase  of  our  method:  (1)  To  generate  a  potentialanomalous  prior  distribution  and  enhance  the  genera-tor’s ability to discriminate between normal and anoma-lous priors, we train the Gaussian transformerTand thegeneratorGwith adversarial objectives simultaneously.(2) To produce more realistic samples in a competitivemanner and make the encoder learn to discern, we trainthe generator and the encoder analogously to the gener-ator and discriminator in GANs.
+在本章中,提出了adVAE来进行异常检测.通过引入高斯异常先验假设和自对抗机制到传统VAE,来得到一个定制化的适合异常检测的VAE.该方法包括三个部分:编码器E,生成器G和高斯变换网络T.
 
-According to equation (3), there are two componentsin the objective function of VAEs:LMS EandLK LD. Thecost function of adVAE is a modified combination ob-jective of these two terms. In the following, we describethe training phase in subsections 3.1 to 3.3 and subsec-tions 3.4 to 3.6 address the testing phase.
+There are two competitive relationships in the training phase of our method: (1) To generate a potential anomalous prior distribution and enhance the generator’s ability to discriminate between normal and anomalous priors, we train the Gaussian transformer T and the generator G with adversarial objectives simultaneously.(2) To produce more realistic samples in a competitive manner and make the encoder learn to discern, we train the generator and the encoder analogously to the generator and discriminator in GANs.
+
+本文方法的训练步骤有两个竞争关系:(1)为了生成潜在异常先验分布和增强生成器区分正常和异常的能力,我们使用对抗训练来训练高斯变换网络T和生成器G.(2)另外为了在竞争状态下产生更加真实的样本,使得编码器和学习到不同,我们以GAN中生成器和判别器那样训练生成器和编码器.
+
+According to equation (3), there are two components in the objective function of VAEs:$L_{MSE}$ and $L_{KLD}$. The cost function of adVAE is a modified combination objective of these two terms. In the following, we describe the training phase in subsections 3.1 to 3.3 and subsections 3.4 to 3.6 address the testing phase.
+
+根据公式3,VAE的目标函数包括两个部分$L_{MSE}$和$L_{KLD}$.adVAE的损失函数结合来这两个部分.3.1~3.3节阐释来训练步骤,3.4~3.6展示来测试细节.
 
 ### 3.1 Training Step 1: Competition between T and G
-The  generator  of  plain  VAE  is  often  so  powerfulthat  it  maps  all  the  Gaussian  latent  code  to  the  high-dimensional  data  space,  even  if  the  latent  code  is  encoded from anomalous samples.  Through the competi-tion betweenTandG, we introduce an effective regu-larization into the generator.
-Our  anomalous  prior  assumption  suggests  that  it  isdifficult  for  the  generator  of  plain  VAE  to  distinguishthe normal and the anomalous latent code, because theyhave overlaps in the latent space. To solve this problem,we synthesize anomalous latent variables and make thegenerator discriminate the anomalous from the normallatent code.   As shown in Figure 2 (a),  we freeze theweights ofEand updateGandTin this training step.The Gaussian transformerTreceives the normal Gaus-sian latent variableszencoded from the normal trainingsamples as the inputs and transformszto the anomalousGaussian latent variableszTwith different meanμTandstandard deviationσT.Taims at reducing the KLD be-tween{z;μ,σ}and{zT;μT,σT}, andGtries to generateas different as possible samples from such two similarlatent codes
+The generator of plain VAE is often so powerful that it maps all the Gaussian latent code to the high-dimensional data space, even if the latent code is encoded from anomalous samples. Through the competition between T and G, we introduce an effective regularization into the generator.
 
-Given a datapointx∈Rd, the objective function in his competition process can be defined as
+普通VAE的生成器有能力将所有高斯隐编码映射到高维数据空间,甚至这个隐编码是异常样本的编码.通过T和G的竞争,我们引入了一个有效的正则方法到生成器中.
+
+Our anomalous prior assumption suggests that it is difficult for the generator of plain VAE to distinguish the normal and the anomalous latent code, because they have overlaps in the latent space. To solve this problem,we synthesize anomalous latent variables and make the generator discriminate the anomalous from the normal latent code. As shown in Figure 2 (a), we freeze the weights of E and update G and T in this training step.The Gaussian transformer T receives the normal Gaussian latent variables $z$ encoded from the normal training samples as the inputs and transforms $z$ to the anomalous Gaussian latent variables $z_T$ with different mean $μ_T$ and standard deviation $σ_T$.T aims at reducing the KLD between $\{z;μ,σ\}$ and $\{z_T;μ_T,σ_T\}$, and G tries to generate as different as possible samples from such two similar latent codes.
+
+我们有一个异常先验假设:普通VAE的生成器难以区分正常和异常隐编码,因为它们在隐空间中有重叠.为了解决这个问题,我们合成来异常隐变量并使生成器判别异常和正常隐编码.如Fig.2(a)所示,训练时,我们冻结E的权重,更新G和T.高斯变换网络T将正常训练样本的高斯隐变量$z$作为输入,并将$z$变换到异常高斯隐变量$z_T$,其期望使$u_T$,标准差是$\sigma_T$.T将最小化$\{z;u,\sigma\}$和$\{z_T;u_T,\sigma_T\}$的KL散度,G尝试从这两个相似的隐编码中生成尽可能不同的样本.
+
+>![Fig2](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200903134711.png)  
+>Figure 2: Architecture and training flow of adVAE. As adVAE is a variation of plain VAE, $\lambda$ is the hyperparameter derived from VAE. We add discrimination objectives to both the encoder and the generator by adversarial learning. The larger the $\gamma$ or $m_z$, the larger the proportion of the encoder discrimination objective in the total loss. The larger the $m_x$, the larger the proportion of the generator discrimination objective. (a) Updating the decoder G and the Gaussian transformer T. (b) Updating the encoder E. (c) Anomaly score calculation. Hatch lines indicate that the weights of the corresponding networks are frozen.   
+>Fig2:adVAE的结构和训练流程.超参$\lambda$使从VAE中派生出来的.通过对抗学习,我们为编码器和生成器都提添加来区分目标的能力.$\gamma$和$m_z$越大,编码器区分目标的损失在整个损失中比重越大.$m_x$越大,生成器区分目标在整个损失中比重越大.(a)更新解码器G和高斯变换网络T.(b)更新编码器E.(c)计算异常分数.阴影表示对应的网络权重被冻结.
+
+Given a datapoint $x\in{R^d}$, the objective function in this competition process can be defined as:
+
+给定数据$x\in{R^d}$,目标函数可以定义为:
+
+$$
+L_G=L_{G_z}+L_{G_{z_T}} \tag{6}
+$$
+
+$$
+L_{G_z}=L_{MSE}(x,G(z))+\gamma L_{KLD}(E(G(z))) 
+$$
+$$
+=L_{MSE}(x,x_{\gamma})+\gamma L_{KLD}(u_r,\sigma_r)  \tag{7}
+$$
+
+$$
+L_{G_{z_T}}=[m_x-L_{MSE}(G(z),G(z_T))]^++\gamma [m_z-L_{KLD}(E(G(z_T)))]^+
+$$
+$$
+=[m_x-L_{MSE}(x_r,x_{T_r})]^++\gamma [m_z-L_{KLD}(u_{T_r},\sigma_{T_r})]^+    \tag{8}
+$$
+
+$$
+L_T=KL(N(z;u,\sigma^2)||N(z;u_T,\sigma^2_T))
+$$
+$$
+=\int{N(z;u,\sigma^2)\log{\frac{N(z;u,\sigma^2)}{N(z;u_T,\sigma^2_T)}}\mathrm{d}z}  \tag{9}
+$$
+$$
+=\log{\frac{\sigma_T}{\sigma}}+\frac{\sigma^2+(u-u_T)^2}{2\sigma^2_T}-\frac{1}{2}
+$$
+
+$[·]^+=max(0,·)$,$m_x$ is a positive margin of the MSE target, and $m_z$ is a positive margin of the KLD target.The aim is to hold the corresponding target term below the margin value for most of the time.$L_{G_z}$ is the objective for the data flow of $z$, and $L_{G_{z_T}}$ is the objective for the pipeline of $z_T$.
+
+
+$L_T$ and $L_G$ are two adversarial objectives, and the total objective function in this training step is the sum of the two:$L_T+λL_G$. Objective $L_T$ encourages T to mislead G by synthesizing T similar to $z$, such that G cannot distinguish them. Objective $L_G$ forces the generator to distinguish between $z$ and $z_T$.T hopes that $z_T$ is close to $z$, whereas G hopes that $z_T$ is farther away from $z$. After iterative learning,T and G will reach a balance.Twill generate anomalous latent variables close to the normal latent variables, and the generator will distinguish them by different reconstruction errors. Although the anomalous latent variables synthesized by T are not necessarily real, it is helpful for the models as long as they try to identify the outliers.
+
+Because the updating of E will affect the balance of T and G, we freeze the weights of E when training T and G. If we do not do this, it will be an objective of three networks’ equilibrium, which is extremely difficult to optimize
