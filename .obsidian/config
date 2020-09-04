@@ -28,5 +28,6 @@
     "dataset",
     "VAEs",
     "hyperparameters"
-  ]
+  ],
+  "alwaysUpdateLinks": true
 }
