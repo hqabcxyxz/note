@@ -17,5 +17,16 @@
   "vimMode": true,
   "spellcheck": true,
   "promptDelete": false,
-  "showLineNumber": true
+  "showLineNumber": true,
+  "spellcheckDictionary": [
+    "Wasserstein",
+    "adVAE",
+    "pytorch",
+    "hyperparameter",
+    "hyperparameters",
+    "hyperparameters",
+    "dataset",
+    "VAEs",
+    "hyperparameters"
+  ]
 }

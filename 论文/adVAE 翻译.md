@@ -377,12 +377,12 @@ Part II is simple and easy to understand. The anomaly score $s_{new}$ of a new s
 
 ## 4.Experiments
 ### 4.1 Datasets
-Most previous works used image datasets to test their anomaly detection models.  To eliminate the impact of different convolutional structures and other image tricks on the test performance, we chose five publicly available and broadly used tabular anomaly detection datasets to evaluate our adVAE model.  All the dataset characteristics are summarized in Table 1.  For each dataset, 80% of the normal data were used for the training phase, and then the remaining 20% and all the outliers were used for testing. More details about the datasets can be found in their references or our [Github repository](https://github.com/WangXuhongCN/adVAE).
+Most previous works used image datasets to test their anomaly detection models. To eliminate the impact of different convolutional structures and other image tricks on the test performance, we chose five publicly available and broadly used tabular anomaly detection datasets to evaluate our adVAE model. All the dataset characteristics are summarized in Table 1. For each dataset, 80% of the normal data were used for the training phase, and then the remaining 20% and all the outliers were used for testing. More details about the datasets can be found in their references or our [Github repository](https://github.com/WangXuhongCN/adVAE).
 
 过去很多工作都是在图像数据集上测试异常检测算法。为了消除不同卷积结构和其他图像的技巧对测试性能的影响，本文选了5个公开的表格异常检测数据集来评价我们的adVAE模型。表1总结了所有数据集的特征。对于每个数据集，使用80%的正常样本来进行训练，剩余20%的正常样本和所有的离群样本都被用于测试。更多的关于数据集的细节参见[Github](https://github.com/WangXuhongCN/adVAE)。
 
 ### 4.2 Evaluation Metric
-The  anomaly  detection  community  defines  anomalous samples as positive and defines normal samples as negative, hence the anomaly detection tasks can also be regarded  as  a  two-class  classification  problem  with  a large skew in class distribution.  For the evaluation of a two-class classifier, the metrics are divided into two categories; one category is defined at a single threshold,and the other category is defined at all possible thresholds.
+The anomaly detection community defines anomalous samples as positive and defines normal samples as negative, hence the anomaly detection tasks can also be regarded as a two-class classification problem with a large skew in class distribution. For the evaluation of a two-class classifier, the metrics are divided into two categories; one category is defined at a single threshold,and the other category is defined at all possible thresholds.
 
 在异常检测中通常定义异常样本为正正常样本为负，因此异常检测任务也可被视为是一个类分布差距极大的二分类任务。针对评价二分类分类器，评价方法可以被分为两类；一类是仅在单个阈值上定义，另一类是在所有可能的阈值上都定义。
 
@@ -390,12 +390,206 @@ The  anomaly  detection  community  defines  anomalous samples as positive and d
 
 **在单一阈值上衡量。** 精确度，准确度，召回率，F1分数是在单一阈值上衡量一个模型性能的常用手段。因为类分布是极端不平衡的，因此精确度不适合用来衡量。
 
-High precision means the fewer chances of misjudging  normal  data,  and  a  high  recall  means  the  fewer chances of models missing alarming outliers.  Even if models  predict  a  normal  sample  as  an  outlier,  people can still correct the judgment of the model through expert knowledge, because the anomalous samples are of small quantity.  However, if models miss alarming outliers,  we  cannot  find  anomalous  data  in  such  a  huge dataset.  Thus, precision is not as crucial as recall.  The F1 score is the harmonic average of precision and recall. Therefore, we adopt recall and the F1 score as the metrics for comparing at a single threshold.
+High precision means the fewer chances of misjudging normal data, and a high recall means the fewer chances of models missing alarming outliers. Even if models predict a normal sample as an outlier, people can still correct the judgment of the model through expert knowledge, because the anomalous samples are of small quantity. However, if models miss alarming outliers, we cannot find anomalous data in such a huge dataset. Thus, precision is not as crucial as recall. The F1 score is the harmonic average of precision and recall. Therefore, we adopt recall and the F1 score as the metrics for comparing at a single threshold.
 
 高准确度表示对于正常样本的误判更少，高召回率表示对于漏检离群点的几率更小。尽管一个模型将正常样本预测为离群点，但由于异常样本数量极少，人们依然可以通过先验知识来纠正模型的结果。但是，一旦模型漏检了一个离群点，我们将很难在从海量的数据中找到异常样本了。因此准确度不及召回率重要。而F1参数是用来调节二者平衡的。这里我们使用召回率和F1分数来作为模型在单一阈值下的衡量标准。
 
-**Metrics at all possible thresholds.** The anomaly de-tection community often uses receiver operator charac-teristic (ROC) and precision–recall (PR) curves, which aggregate over all possible decision thresholds, to eval-uate the predictive performance of each method. Whenthe  class  distribution  is  close  to  being  uniform,  ROCcurves  have  many  desirable  properties.   However,  be-cause anomaly detection tasks always have a large skewin the class distribution, PR curves give a more accuratepicture of an algorithm’s performance [45].
+**Metrics at all possible thresholds.** The anomaly detection community often uses receiver operator characteristic (ROC) and precision–recall (PR) curves, which aggregate over all possible decision thresholds, to evaluate the predictive performance of each method. When the class distribution is close to being uniform, ROC curves have many desirable properties. However, because anomaly detection tasks always have a large skew in the class distribution, PR curves give a more accurate picture of an algorithm’s performance [45].
 
-Rather than comparing curves, it is useful and clearto analyze the model performance quantitatively usinga single number.  Average precision (AP) and area un-der the ROC curve (AUC) are the common metrics tomeasure performance, with the former being preferredunder class imbalance.
+**在所有阈值上衡量.** ROC曲线和RP曲线是异常检测中常用的评价手段,它们可以汇集所有的阈值,然后评价模型的性能.当类别分布均衡时,ROC曲线的效果不错.然而,对于异常检测这个类别分布极端不均衡的任务,PR曲线用于衡量算法性能反而更加精准.
 
-AP summarizes a PR curve by a sum of precisionsat each threshold, multiplied by the increase in recall,which is a close approximation of the area under the PRcurve:AP=∑nPn∆Rn,  wherePnis the precision atthenththreshold and∆Rnis the increase in recall fromthen−1thto thenththreshold.  Because the PR curveis more useful than the ROC curve in anomaly detec-tion, we recommend using AP as an evaluation metricfor anomaly detection models rather than AUC. In ourexperiments, recall, F1 score, AUC, and AP were usedto evaluate the models performance.
+Rather than comparing curves, it is useful and clear to analyze the model performance quantitatively using a single number. Average precision (AP) and area under the ROC curve (AUC) are the common metrics to measure performance, with the former being preferred under class imbalance.
+
+比起比较曲线,使用单一指标评价模型性能会更清晰有效.在类别不平衡的情况下,使用平均精度(AP)比ROC曲线面积(AUC)更好.
+
+AP summarizes a PR curve by a sum of precisions at each threshold, multiplied by the increase in recall,which is a close approximation of the area under the PR curve:$AP=∑_nP_n∆R_n$, where $P_n$ is the precision at the $n^{th}$ threshold and $∆R_n$ is the increase in recall from the $n−1^{th}$ to the $n^{th}$ threshold. Because the PR curve is more useful than the ROC curve in anomaly detection, we recommend using AP as an evaluation metric for anomaly detection models rather than AUC. In our experiments, recall, F1 score, AUC, and AP were used to evaluate the models performance.
+
+AP就是PR曲线下面积的近视:$AP=∑_nP_n∆R_n$,$P_n$是$n^{th}$阈值下的精度,$∆R_n$ 是阈值$n−1^{th}$ 到$n^{th}$ 召回的变化量.由于PR曲线在异常检测任务中比ROC曲线更好,因此我们推荐使用AP作为评价指标而不是AUC.本文实验指标采用召回,F1 分数,AUC和AP.
+
+### 4.3 Model Configurations
+The network structures of adVAE used are summarized in Figure 4, where the size of each layer was proportionate to the input dimension dim(x). The Adam optimizer was used in all datasets with a learning rate of 0.001. We trained each model for a maximum 20000 mini-batch iterations with a batch size of 128. Kaiming uniform weight initialization was used for all three subnetworks.
+
+Fig4展示来adVAE的网络结构.其中每层大小和输入的维度 dim(x)成比例.使用学习率为0.001的adam.以128大小的Batch size训练20000步.每个网络使用 Kaiming 初始化.
+
+>![Fig4](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904100701.png)
+>Figure 4: Network structure of adVAE. For the encoder, generator, and transformer networks, we adopted fully connected neural networks consisting of three hidden layers. For the individual dataset, we adjust the number of neurons according to the dimension of the training data dim(x)
+>Fig4:hyperparameters
+
+As shown in Table 2, there are four hyperparameters in adVAE model. $λ$is derived from plain VAE, and the other three new parameters are used to maintain the balance between the original training objective and the additional discrimination objective. The larger the $γ$ or $m_z$,the larger the proportion of the encoder discrimination objective in the total loss. The larger the $m_x$, the larger the proportion of the generator discrimination objective.
+
+如表2所示,adVAE主要有4个超参.$λ$是普通VAE所有的,其他三个是用来平衡原始训练目标和额外的判别目标的,$γ$ 或 $m_z$越大,编码器判别所占损失的比重越大.$m_x$越大,生成器判别所占损失越大.
+
+![Tab2](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904101101.png)
+
+The KLD margin $m_z$ can be selected to be slightly larger than the training KLD value of plain VAEs and the MSE margin $m_x$ was set equal to 2 for each dataset $γ$ and $m_z$ have similar effects,$γ$ is always suggested to be fixed as 0.001. Adjusting the parameters becomes easier, because we can simply consider tuning $m_x$ and $m_z$. Note that the structure and hyperparameters used in this study proved to be sufficient for our applications, although they can still be improved.
+
+可以将KLD边界$m_z$设置的比普通VAE的大,MSE的边界$m_x$可以设置为2.由于$γ$ 和 $m_z$有同等效力,$γ$ 设置成0.001.为了简化调参,我们仅仅考虑调整$m_x$ 和 $m_z$.虽然本文实验显示这组参数很有效,但它们仍有提升的空间.
+
+### 4.4 Compared Methods
+We compare adVAE with the eleven most advanced outlier detection algorithms, which include both traditional and deep-learning-based methods. To obtain a convincing conclusion, the hyperparameters of competing methods are searched in a range of optional values. They can be divided into seven categories: (i) A boundary-based approach, OCSVM [31]. It is a widely used semi supervised outlier detection algorithm, and we use a RBF kernel in all tasks. Because OCSVM needs an important parameter $ν$, its value will be searched in the range {0.01, 0.05, 0.1, 0.15, 0.2}. (ii) An ensemble-learning-based approach, IForest [46]. The hyperparameter to be tuned is the number of decision trees $n_t$,which is chosen from the set {50, 100, 200, 300}. (iii)A probabilistic approach, ABOD [47]. (iv) Distance-based approaches, SOD [48] and HBOS [49]. Because the performance of ABOD and SOD will be dramatically affected by the size of the neighborhood, we tune it in the range of{5, 8, 16, 24, 40}. For HBOS, the number of bins is chosen from{5, 10, 20, 30, 50}. (v) Three GAN-based models, GAN [12], MOGAAL [24], and WGAN-GP [36]. GAN shares the same network structure as adVAE, except that the output layer of the discriminator is one-dimensional, and the configurations of MOGAAL refer to its official open source code.Based on the network structure of GAN, WGAN-GP removes the output activation function of the generator. (vi) Three reconstruction-based methods, AE [13],DAGMM [38], and VAE [13]. The AE, VAE, and DAGMM share the same network structure as adVAE,except that the hyperparameter dimension of DAGMM is required to be 1. VAE shares the same hyperparameter $λ$ as adVAE. (vii) Two ablation models of the proposed adVAE, named E-adVAE and G-adVAE, are also com-pared to demonstrate how the two discrimination objectives affect the performance. Figure 5 and 6 show the architecture of our two ablation models, respectively. E-adVAE, G-adVAE, and adVAE share the same parameters and network structure. 
+
+适用来11种先进的离群点检测算法来作为对比,这里面既有传统的也有基于深度学习的. 为了得到更加有说服力的结论,方法的超参将在一系列值中取最好.这些方法可以被分为7大类:
+(i) 基于边界的方法OCSVM[31],这是一种被广泛适用的半监督离群点检测算法,我们适用RBF核函数.它的重要参数$ν$将在{0.01, 0.05, 0.1, 0.15, 0.2}中搜索.
+(ii)嵌入学习类的方法,IForest[46].需要调整的超参是决策树数量$n_t$,从{50, 100, 200, 300}中选.
+(iii)基于统计的方法,ABOD[47].
+(iv)基于距离的方法.SOD[48]和HBOS[49].ABOD和SOD的性能和邻域大小有关,我们从{5, 8, 16, 24, 40}中选.对于HBOS,bin 的数量从{5, 10, 20, 30, 50}选.
+(v)三个基于GAN的方法,GAN[12],MOGAAL[24],WGAN-GP[36].GAN 和 adVAE 网络结构相同,只不过将判别器的输出换成1维,MOGAAL的配置参考官方代码.WGAN-GP则去掉了生成器的输出激活函数.
+(vi)三个重建类的方法,AE[13],DAGMM[38] 和VAE[13].这三和 adVAE 网络结构相同,只不过DAGMM的隐维度是1.VAE和 adVAE 共享超参$λ$.
+(vii) 两个消融模型.叫E-adVAE 和 G-adVAE,用来衡量两个判别条件对于最终测试性能的影响.图5和6展示来这两的网络结构,这两和 adVAE 共享参数和网络结构.
+
+All deep-learning methods are implemented in pytorch and share the same optimizer, learning rate, batch size, and iteration times as adVAE, except that the parameters of DAGMM and MOGAAL refer to their author’s recommendation. All traditional methods are implemented on a common outlier detection framework PyOD [50].
+
+所有深度学习类方法用 pytorch 实现,用和 adVAE 同样的优化器,学习率,批量大小,迭达次数.DAGMM和MOGAAL则使用来原作者推荐参数.所用传统方法实现均来自离群检测框架 PyOD[50].
+
+>![fig5](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904110330.png)
+>Figure 5:  Structure of E-adVAE. As adVAE is formed by adding a discrimination objective to both the generator and the encoder of plain VAE, we also propose an ablation model E-adVAE, in which only the encoder has the discrimination objective
+>Fig5:E-adVAE结构.即仅在编码器上添加判别目标.
+
+>![Fig6](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904110548.png)
+>Figure 6: Structure of G-adVAE. This is the other ablation model G-adVAE: only the generator has the discrimination objective.
+>Fig6:G-adVAE结构.仅在生成器上添加判别目标.
+
+### 4.5 Results and Discussion
+Table 3 shows the experimental results for the AP and AUC metrics, and Table 4 indicates the results for the recall and F1 score. According to the experimental results, the adVAE model achieved 11 best and 5 second-best results from 24 comparisons. Therefore, adVAE is significantly better than other compared methods.
+
+表3展示了AP和AUC,表4展示来F1分数和召回.在24项比较中,adVAE有11最好,5项次好.由此可以看出 adVAE 比其他方法好.
+
+Among all the experimental results, the performance of VAE is generally slightly better than AE, because VAE has a KLD regularization of the encoder, which proves the importance of regularization in AE-based anomaly detection algorithms.
+
+在所有实验中显示,VAE普遍比AE结果略好,这是由于VAE对于编码器有KLD正则,这显示来基于AE的异常检测算法中,正则是很重要的
+
+We customize plain VAE by the proposed self-adversarial mechanism, reaching the highest AP improvement of 0.255 (40.8%). Compared to its base technique VAE, on average, adVAE improved by 0.113(14.9%) in AP, 0.036 (3.9%) in AUC, 0.046 (5.3%) in recall, and 0.049 (7.3%) in F1 score. The outstanding results of adVAE prove the superiority of the proposed self-adversarial mechanism, which helps deep generative models to play a greater role in anomaly detection research and applications.
+
+对普通VAE采用自对抗策略,最高AP可以提升0.255(40.8%).相较于基础VAE,adVAE AP提升来0.113(14.9%),AUC提升0.036(3.9%),recall提升0.046(5.3%),F1分数提升0.049(7.3%).这个结果正米来自我对抗机制的优越性,这将有助于深度生成模型在异常检测研究和应用中发挥更大的作用.
+
+OCSVM performed well in the cardio, satellite, and pen datasets, but achieved horrible results in the letter and optical datasets. The results indicate that the conventional method OCSVM is not stable enough, leading the AP gap from adVAE to reach an astonishing 0.8 in the optical dataset. Actually, all traditional anomaly detection methods (e.g., IForest, HBOS, and SOD) have the same problem as OCSVM: They perform well on some datasets, but they perform extremely poorly on other datasets. ABOD’s performance is more stable than others, but it still suffers from the above problem.
+
+OCSVM(one-class SVM)在心脏,卫星,笔数据集上表现不错,但是在字母和光学数据上表现很糟糕.显然传统的OCSVM方法不够鲁棒,在光学上AP和adVAE甚至差了0.8.实际上,所有的传统异常检测方法(孤立森林,HBOS和SOD)都有着和OCSVM一样的问题:不是对所有数据集都适用.ABOD比这几个略好点,但也好不到哪去.
+
+The reason for this is that conventional methods often have a strict data assumption. If training data are high-dimensional or not consistent with the data assumption, their performance may be significantly impaired. Because neural-network-based methods do not need a strict data assumption and are suitable for big and high-dimensional data, they have more stable performance on diverse datasets with different data distributions.
+
+原因就是传统方法对于数据有严格的假设.若训练数据是高维或和数据假设不符合,它们的性能就不行来.由于基于神经网络的方法不需要严格的数据假设,并且适用于高维的海量数据,因此这类方法在各种不同的数据分布上都有更加稳定的性能.
+
+In our experiments, both VAE and AE outperformed the GAN-based methods in most datasets. The results are analyzed as follows: Because the mode collapse issue of GANs cannot be characterized in a training loss curve, people usually monitor the generated images during the training phase. However, for tabular datasets, it is difficult for us to ensure that the generated samples are diverse enough. A GAN with mode collapse would mislabel normal data as outliers and cause a high false positive rate, because GAN learns an incomplete normal data distribution in this case. To better recover the distribution of normal data, MOGAAL suggests stopping optimizing the generator before convergence and expanding the network structure from a single generator to multiple generators with different objectives. However, a nonconverged model brings more uncertainty to experimental results, because it is impossible to know what the model has learned precisely. According to the results, it does have a performance improvement over plain GAN, but still has a performance gap with AE-based methods. WGAN-GP tries to avoid mode collapsing, which leads to better results of all four metrics than plain GAN. However, it still results in worse performance than encoder-decoder-based methods. GAN is better at generating high-quality samples rather than learning the complete probability distribution of the training dataset. Thus GAN-based methods do not perform well for outlier detection.
+
+在本文实验中,VAE和AE都比基于GAN的方法要好.原因如下:训练的损失曲线无法描述GAN的模式崩溃,在训练阶段人们会监控生成图像.但是对于表格数据集,这很难保证生成的样本是多样的.有模式崩溃的GAN会将正常样本误识别离群点从而得到一个高的假阳率，因为GAN学习到的是不完整的正常数据分布。为了更好的恢复正常数据的分布，MOGAAL建议在生成器收敛前停止优化并将网络结构从单一生成器拓展到多个带有不同目标的生成器。然而没有收敛的模型会给实验结果带来更多的不确定性，因为不知道模型究竟学到什么。根据结果，比起普通的GAN这种方法确实有提升，但是和AE类的方法相比仍然有差距。WGAN-GP尝试避免模式崩溃，它的4个衡量指标比普通GAN更好，但是还没有AE类的方法好。GAN在生成高质量的样本上更有优势，而不是学习整个数据集的分布。因此基于GAN的方法在离群点检测任务中不够适合。
+
+For three reconstruction-based neural network models, there is no significant performance gap between AE and VAE, whereas DAGMM is worse than them in our tests. This is explained by the fact that the latent dimension of DAGMM is required to be set as 1,which severely limits the ability of the model to summarize datasets. The results also indicate this explanation: DAGMM only achieves good results in the cardio dataset, which has the lowest data size and dimensions.The larger the size and dimensions of the dataset, the larger performance gap between DAGMM and AE.
+
+针对三个基于重建的神经网络方法，和AE，VAE相比没有明显的性能差异，其中DAGMM性能最差。这是由于DAGMM要求隐维度是1，这个限制来模型学习整个数据集的能力。由此可以得出一个结论：DAGMM 在 cardio 数据集上取得好的效果是因为数据维度低且数据量小。数据维度和数量越大，AE和DAGMM的表现差距越大。
+
+In conclusion, the AE and VAE methods are better than most of the other anomaly detection methods according to our tests. Moreover, adVAE learns to detect outliers through the self-adversarial mechanism, which further enhances the anomaly detection capability and achieves state-of-the-art performance. We believe that the proposed self-adversarial mechanism has immense potentiality, and it deserves to be extended to other pattern recognition tasks.
+
+综上，AE和VAE的方法比其他异常检测方法要好。其中 adVAE 通过自对抗机制学习离群点，这大大加强来它检测异常的能力，取得来 sort 性能。我们相信自对抗机制有着巨大的潜力，值得推广到其他模式识别任务上。
+
+> ![Tab3](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904111218.png)
+> Table 3:  AP and AUC comparisons between the baselines and adVAE. AP is a better metric than AUC in anomaly detection.  Note that the best result is typeset in bold and the second best in italic typeface. The dataset names are represented as their first three letters and Avg. represents the average.
+> Tab3:adVAE 和一些基线方法的AP和AUC。AP比AUC在异常检测上更加有优势。粗体是最好结果，斜体是次好的。每个数据集名称用前三个字母替代，Avg.代表来平均值。
+
+>![Tab4](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904111325.png)
+>Table 4: Recall and F1 score comparisons between the baselines and adVAE. For all reconstruction-based methods (AE, VAE, DAGMM, G-adVAE,E-adVAE, and adVAE), the significance level $α$ was set to 0.1. Note that the best result is typeset in bold and the second best in italic typeface. The dataset names are represented as their first three letters and Avg. represents the average.
+>Tab4:基线方法和adVAE的召回和F1分数.
+
+### 4.6. Ablation Study
+To  illustrate  the  impact  of  different  designs  on  the model results, we design three different types of ablation experiments:
+
+为了展示不同设计对模型结果的影响,我们设计来三个不同类型的消融实验:
+
+(i) Because adVAE is formed by adding two different training objectives to plain VAE, it is important to demonstrate how the two discrimination objectives affect the performance.  Hence we propose E-adVAE and G-adVAE models (Figure 5 and 6) to demonstrate the effect of removing one of the discrimination objectives from  adVAE.  According  to  Table  3  and  4,  the  results show that both G-adVAE and E-adVAE achieve performance improvements compared to plain VAE, which indicates the validity of the two discriminative objectives of  adVAE  In  addition,  E-adVAE  is  more  competitive than G-adVAE in most datasets. This result is analyzed as follows.  Because the latent variables $z$ have a lower dimension than the original data $x$,$x$ has more information than $z$. Therefore, the benefit of adding the discriminating target to the encoder E is more significant than adding it to the generator G.
+
+(i) adVAE 是通过给普通VAE添加两个不同训练目标得来的,因此显示这两个判别目标对性能影响的重要性是必要的.我们提出来E-adVAE 和G-adVAE,分别是去掉来一个判别目标.根据表3和4,结果显示G-adVAE 和 E-adVAE 都比普通VAE好,其中在多数数据集上,E-adVAE 要更好一些.这是由于隐变量$z$比原始数据$x$的维度少,信息不如原始数据多.因此编码器E比生成器G获益更多.
+
+(ii) Because the encoder and generator work together to detect outliers, we performed a latent space visualization to prove the improvement in the encoder’s anomaly detection capability. Figure 8 illustrates that the encoder of  adVAE  has  a  better  discrimination  ability,  because the latent variables are separated in the latent space and more easily distinguished by the later generator.
+
+(ii)因为编码器和生成器一同检测离群点,因此我们将隐空间可视化出来证明编码器的异常检测能力.Fig8显示来adVAE的编码器有更好的异常检测能力,因为隐变量在隐空间中是分离的的,比生成器的更好分辨.
+
+(iii)  To  independently  verify  the  anomaly  detection capabilities of the generator, we synthesize latent outlier variables $z_o$ by adding five types of noise to the normal latent variables $z_n$.  These latent variables are the outputs  of  the  five  corresponding  encoders  and  the  input data of the encoders are 200 normal samples $x_n$ from the pen [44] datasets The normal scores vector $s_n∈R^{200}$ can be calculated from $x_n$ and $G(z_n)$, and the anomalous scores vector $s_o∈R^{200}$ can be calculated from $x_n$ and $G(z_o)$ (as in section 3.4).  Afterwards, the Wasserstein distance between $s_n$ and $s_o$ is used to measure the detection capabilities of each generator. Figure 7 indicates that the generator G of adVAE also has a better ability to discriminate latent variables.
+
+(iii)为了分开验证生成器的异常检测能力,我们通过对正常隐变量$z_n$添加五种噪声来合成来隐离群变量$z_o$.这些
+隐变量是5个对应编码器的数据,输入数据是来自pen数据集的200张正常样本$x_n$.正常分数向量$s_n∈R^{200}$可以根据$x_n$和$G(z_n)$计算出来,异常分数向量$s_o∈R^{200}$可以根据$x_n$ 和 $G(z_o)$计算(如3.4节).$s_n$ 和$s_o$之间的[[Wasserstein 距离]]被用来衡量每个生成器的检测能力.图7展示来adVAE的生成器G有更好的能力分辨隐变量.
+
+In conclusion,  benefiting from better discrimination abilities,  adVAE  has  better  anomaly  detection  performance.  This proves that the proposed self-adversarial mechanism is a prospective way of customizing generative models to fit outlier detection tasks.
+
+综上,收益于更好的分辨能力,adVAE 有更好的异常检测性能.这也证明了本文提出的自对抗即使能够通过定制声称模型来适合离群点检测任务.
+
+>![Fig7](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904114855.png)
+>Figure  7:   To  independently  verify  the  sensitivity  of  the  generator to anomalies, we add different noises to the normal latent variables.Noise 1:  adding a uniform distribution $U(0,1)$;  Noise 2:  adding a Gaussian distribution $N(0,1)$; Noise 3:  adding a constant value 0.5;Noise 4:  multiplying the last half dimensions of the latent vector by 0.5; Noise 5: setting the first half dimensions of the latent vector to 0.The larger the Wasserstein distance, the better the anomaly detection capability.  The generator of adVAE achieves the best discrimination performance, and G-adVAE’s generator is the second best. Benefiting from the adversarial training between E and G, the detection performance of the E-adVAE’s generator is also improved in comparison to plain VAE.
+>图7:为独立验证生成器对异常点的敏感性,我们添加来不同的噪声到正常隐变量.噪声1:平均分布噪声.噪声2:高斯分布.噪声3:哼定制0.5.噪声4:对一半维度的隐变量乘以0.5.噪声5:将隐变量的前一半置零.Wasserstein 距离越大,异常检测能力越强.adVAE 的生成器有最好的性能,G-adVAE 的生成器次之.受益于E和G的对抗训练,E-adVAE 的生成器比一般的VAE也有更好的检测性能.
+
+>![Fig8](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904115005.png)
+>Figure 8: T-SNE visualization of the latent space in the letter dataset. The orange points represent the latent variables encoded from normal data, and the blue points are encoded from anomalous data. The KDE curves at the top indicate that adVAE’s latent space overlaps are smaller than VAE’s,which means that the encoder of adVAE has a better ability to distinguish the normal data from the outliers.  The visualization plot of G-adVAE does not show significant advantages compared to plain VAE, and E-adVAE’s plot proves that the encoder does benefit from the discrimination objective.
+>图8:T-SEN将 letter 数据集的隐空间可视化.橙色点代表了正常数据的隐编码,蓝色是异常.头上KDE曲线显示来 adVAE 的隐空间重叠比VAE的更小,这意味着 adVAE 的编码器有更强的离群点检测能力.G-adVAE 的可视化显示和普通 VAE差距不大,而E-adVAE 图则证明来编码器确实有从判别目标中获益.
+
+>![Fig9](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904115104.png)
+>Figure 9: Robustness experiment results. (a) $λ$ is the hyperparameter derived from VAE, which has a significant impact on performance, and hence it should e set carefully. (b)$γ$ and $m_z$ have a similar role: enhancing the encoder’s discrimination objective. Because adVAE with $γ=0.01$ achieves the best results in all datasets, we suggest fixing $γ$ as 0.01 and tuning $m_z$ instead. (c) The model performance is not sensitive to $m_z$, and it should be considered to simply set it between 20 and 40. (d)$m_x$ is used to enhance the generator’s discrimination objective, and the choice of this parameter is not very critical.  For convenience, we fixed it as 2 for all tests.  (e) As long as the scale of the neural network is large enough, the number of network layers or the number of neurons will not have a significant impact on the results.  (f) Contaminated training data negatively affect the detection accuracy and adVAE is more sensitive, especially when the contamination ratio is larger than 3%, because the additional discrimination objectives of adVAE are more susceptible to contamination data.
+>图9:鲁棒性实验结果.(a)$λ$是从VAE继承来的超参,对于性能的影响很大,要小心设置.(b)$γ$ 和$m_z$作用类似,用于加强编码器的判别目标,因为 adVAE 在$γ=0.01$时取得来最好的结果,因此我们建议将 $γ$固定0.01,调整$m_z$就行.(c)$m_z$对模型影响不大,建议设置在20到40.(d)$m_x$是用于将加强生成器的判别目标的,且该参数影响不大,为了简化实验,我们固定为2.(e)只要神经网络规模足够大,网络层数量或神经元数量就不会对结果产生显著影响.(f)脏的训练数据对检测精度有负作用,并且 adVAE 对此更加敏感,尤其是当污染率大于3%.这是因为额外的判别目标更易受脏数据影响.
+
+### 4.7 Robustness Experiments
+Because adVAE involves four primary hyperparameters, it is essential to implement in-depth hyperparameter experiments comprehensively.  As shown in Figure9(a)–9(d), we tested the results for four hyperparameters. Actually, only $m_z$ and $m_x$ need to be tuned, because $λ$ is derived from VAE and $γ$ is fixed as 0.01.   Based on that, finding good hyperparameters of adVAE is not more complicated than plain VAE, because it is not sensitive to $m_z$ and $m_x$ according to Figure 9(c) and 9(d).
+
+因为 adVAE 引入了4个主要的超参,因此全面而深入的进行超参实验是必要的.如图9(a)~9(d),我们测试了4个超参的结果.实际上只有$m_z$ 和$m_x$ 需要调整.$λ$ 是从VAE引入的且 $γ$ 固定为0.01.根据图9(c)和9(d),找到 adVAE 良好的超参并不必普通 VAE复杂,因为$m_z$ 和$m_x$ 影响不大.
+
+As for the learning ability of neural networks, we tune the number of layers from 2 to 6 and adjust the number of hidden neurons from 1/3 dim(x) to dim(x).  The results are shown in Figure 9(e),  where V1–V5 represent the parameter variation.  It can be seen that V1 achieved as lightly worse detection capability, because the insufficient networks cannot learn enough information of the normal training data. As long as the scale of neural network is within a reasonable range, adVAE is robust to network structure.
+
+至于神经网络学习能力,我们将层数从2调到6,将隐藏神经元数目从 1/3 dim(x) 调到 dim(x).如图9(e),V1-V5代表来各种参数组合.V1性能最差,因为网络容量不足以学习正常训练数据的足够信息,只要神经网络容量合理,adVAE 会对网络结构保持相对稳健.
+
+Because adVAE needs an anomaly-free dataset, it is important to investigate how adVAE responds to contaminated  training  data.   Meanwhile,  we  also  choose three  semi supervised  anomaly  detection  methods  for comparison.  ADASYN [51] is used to synthesize new anomalous  samples.   The  results  of  Figure  9(f)  show that OCSVM is more robust with a contaminated dataset than the other three AE-based methods. This is because OCSVM  can  ignore  certain  noises  when  learning  the boundary of the training data, whereas AE-based models always try to reduce the reconstruction error for all training data. Moreover, a high contamination ratio will more  easily  disrupt  the  proposed  discrimination  loss,which  suggests  training  an  AE-based  anomaly  detection model with high-quality data (i.e., a clean or low-contamination-ratio dataset). In practice, normal data is easy to collect, and thus the contamination ratio usually remains at a low level.
+
+由于 adVAE 需要一个纯正常的数据集,因此研究 脏数据集对 adVAE 的影响是必要的.同时,我们还选择来三个半监督异常检测方法作为比较,ADASYN[51] 被用来合成新的异常样本.图9(f)显示OCSVM比3个AE类的方法对脏数据更加鲁棒.这是由于OCSVM在学习训练数据边界时会忽略某些噪声,而AE类方法总是尝试最小化所有训练数据的重构误差.此外,脏数据更容易破坏判别目标损失,因此建议对于AE类的异常检测模型,应适用一个高质量的数据集.在实际中,正常数据容易收集,因此一般数据集污染率比较低.
+
+## 5. Conclusion
+In  this  paper,  we  have  proposed  a  self-adversarial Variational Auto-encoder  (adVAE)  with  a  Gaussian anomaly prior assumption and a self-adversarial mechanism. The proposed adVAE is encouraged to distinguish the normal latent code and the anomalous latent variables generated by the Gaussian transformer T, which can  also  be  regarded  as  an  outstanding  regularization introduced  into  VAE-based  outlier  detection  method.The results demonstrate that the proposed adVAE out-performs than other state-of-the-art anomaly detection methods.  In the future, we will try to redesign the discrimination objective of the generator to further enhance the generator’s ability to recognize anomalies.
+
+本文提出来带有高斯先验假设和自对抗机制的自对抗变分自编码器(adVAE).adVAE 可以区分正常隐变量和由高斯变换网络T产生的异常隐变量,这也可以视为是对VAE类离群点检测方法引入的一个优秀的正则策略.结果显示了本文方法很牛逼.在后期工作中,我们将尝试重新设计生成器的判别目标来进一步增强生成器识别异常的能力.
+
+## References
+[1]  G.  Osada,  K.  Omote,  T.  Nishide,  Network  intrusion  detection based on semi-supervised variational auto-encoder, in: European  Symposium  on  Research  in  Computer  Security  (ES-ORICS), Springer, 2017, pp. 344–361 (2017).
+[2]  A. Abdallah, M. A. Maarof, A. Zainal, Fraud detection system:A  survey,  Journal  of  Network  and  Computer  Applications  68(2016) 90–113 (2016).
+[3]  P.  Cui,  C.  Zhan,  Y.  Yang,  Improved  nonlinear  process  monitoring  based  on  ensemble  kpca  with  local  structure  analysis,Chemical  Engineering  Research  and  Design  142  (2019)  355–368 (2019).
+[4]  T.  Schlegl,  P.  Seeb ̈ock,  S.  M.  Waldstein,  U.  Schmidt-Erfurth,G.  Langs,  Unsupervised  anomaly  detection  with  generative adversarial  networks  to  guide  marker  discovery,  in:   International Conference on Information Processing in Medical Imaging (IPMI), Springer, 2017, pp. 146–157 (2017).
+[5]  S. Akcay, A. A. Abarghouei, T. P. Breckon, Ganomaly:  Semi-supervised anomaly detection via adversarial training, in: Asian Conference on Computer Vision (ACCV), Springer, 2018, pp.622–637 (2018).
+[6]  C. Zhang, J. Bi, S. Xu, E. Ramentol, G. Fan, B. Qiao, H. Fu-jita, Multi-imbalance:  An open-source software for multi-class imbalance  learning,  Knowl.-Based  Syst.  174  (2019)  137–143(2019).
+[7]  F. Zhou,  S. Yang,  H. Fujita,  D. Chen,  C. Wen,  Deep learning fault diagnosis method based on global optimization gan for unbalanced data, Knowl.-Based Syst. (2019).
+[8]  G. Lemaˆıtre,  F. Nogueira,  C. K. Aridas,  Imbalanced-learn:  A python toolbox to tackle the curse of imbalanced datasets in ma-chine learning, Journal of Machine Learning Research 18 (17)(2017) 1–5 (2017).
+[9]  M. A. F. Pimentel, D. A. Clifton, L. A. Clifton, L. Tarassenko, A review of novelty detection, Signal Processing 99 (2014) 215–249 (2014).
+[10]  R. Chalapathy, S. Chawla, Deep Learning for Anomaly Detection: A Survey, arXiv e-prints (2019) arXiv:1901.03407 (2019).
+[11]  D. P. Kingma,  M. Welling,  Auto-Encoding Variational Bayes,in:International   Conference   on   Learning   Representations(ICLR), 2014 (2014).
+[12]  I. J. Goodfellow, J. Pouget-Abadie, M. Mirza, B. Xu, D. Warde-Farley, S. Ozair, A. C. Courville, Y. Bengio, Generative adversarial nets, in:  Annual Conference on Neural Information Processing Systems (NeurIPS), MIT Press,  2014,  pp. 2672–2680(2014).    
+[13]  J. An, S. Cho, Variational autoencoder based anomaly detection using reconstruction probability, Tech. rep., SNU Data Mining Center (2015).
+[14]  D. Park, Y. Hoshi, C. C. Kemp, A multimodal anomaly detectorfor  robot-assisted  feeding  using  an  lstm-based  variational  au-toencoder, IEEE Robotics and Automation Letters 3 (3) (2018)1544–1551 (2018).
+[15]  S. Suh, D. H. Chae, H. Kang, S. Choi, Echo-state conditionalvariational autoencoder for anomaly detection, in: InternationalJoint Conference on Neural Networks (IJCNN), IEEE, 2016, pp.1015–1022 (2016).
+[16]  H. Xu, W. Chen, N. Zhao, Z. Li, J. Bu, Z. Li, Y. Liu, Y. Zhao,D.  Pei,  Y.  Feng,  J.  Chen,  Z.  Wang,  H.  Qiao,  Unsupervisedanomaly detection via variational auto-encoder for seasonal kpisin web applications, in: International World Wide Web Confer-ence (WWW), ACM, 2018, pp. 187–196 (2018).
+[17]  A.  Makhzani,  J.  Shlens,  N.  Jaitly,  I.  Goodfellow,  Adversarialautoencoders, in:  International Conference on Learning Repre-sentations (ICLR), 2016 (2016).
+[18]  S. Pidhorskyi, R. Almohsen, G. Doretto, Generative probabilis-tic  novelty  detection  with  adversarial  autoencoders,  in:   An-nual  Conference  on  Neural  Information  Processing  Systems(NeurIPS), MIT Press, 2018, pp. 6823–6834 (2018).
+[19]  M. Ravanbakhsh, M. Nabi, E. Sangineto, L. Marcenaro, C. S.Regazzoni, N. Sebe, Abnormal event detection in videos usinggenerative adversarial nets, in: International Conference on Im-age Processing (ICIP), IEEE, 2017, pp. 1577–1581 (2017).
+[20]  X.  Chen,  D.  P.  Kingma,  T.  Salimans,  Y.  Duan,  P.  Dhariwal,J. Schulman, I. Sutskever, P. Abbeel, Variational lossy autoen-coder, in: International Conference on Learning Representations(ICLR), 2017 (2017).
+[21]  M. Fraccaro, S. K. Sønderby, U. Paquet, O. Winther, Sequentialneural models with stochastic layers, in: Annual Conference onNeural  Information  Processing  Systems  (NeurIPS),  2016,  pp.2199–2207 (2016).
+[22]  I. V. Serban, A. Sordoni, R. Lowe, L. Charlin, J. Pineau, A. C.Courville,  Y.  Bengio,  A  hierarchical  latent  variable  encoder-decoder model for generating dialogues, in:  AAAI Conferenceon Artificial Intelligence (AAAI), 2017, pp. 3295–3301 (2017).
+[23]  A. Honkela, H. Valpola, Variational learning and bits-back cod-ing:  an information-theoretic view to bayesian learning, IEEETransactions on Neural Networks 15 (4) (2004) 800–810 (2004).
+[24]  Y. Liu, Z. Li, C. Zhou, Y. Jiang, J. Sun, M. Wang, X. He, Gener-ative adversarial active learning for unsupervised outlier detec-tion,  IEEE Transactions on Knowledge and Data Engineering(2019).
+[25]  Y. Kawachi, Y. Koizumi, N. Harada, Complementary set varia-tional autoencoder for supervised anomaly detection, in:  Inter-national Conference on Acoustics, Speech and Signal Process-ing (ICASSP), IEEE, 2018, pp. 2366–2370 (2018).
+[26]  H. Huang, Z. Li, R. He, Z. Sun, T. Tan, Introvae:  Introspectivevariational autoencoders for photographic image synthesis, in:Annual Conference on Neural Information Processing Systems(NeurIPS), MIT Press, 2018, pp. 52–63 (2018).
+[27]  J. Ilonen, P. Paalanen, J. Kamarainen, H. K ̈alvi ̈ainen, Gaussianmixture  pdf  in  one-class  classification:  computing  and  utiliz-ing confidence values, in:  International Conference on PatternRecognition (ICPR), IEEE, 2006, pp. 577–580 (2006).
+[28]  D.  Yeung,  C.  Chow,  Parzen-window  network  intrusion  de-tectors,  in:   International  Conference  on  Pattern  Recognition(ICPR), IEEE, 2002, pp. 385–388 (2002).[29]  M. M. Breunig, H. Kriegel, R. T. Ng, J. Sander, LOF: identifyingdensity-based local outliers,  in:  ACM SIGMOD InternationalConference on Management of Data (SIGMOD), ACM, 2000,pp. 93–104 (2000).
+[30]  B. Tang, H. He, A local density-based approach for outlier de-tection, Neurocomputing 241 (2017) 171–180 (2017).
+[31]  B. Sch ̈olkopf, J. C. Platt, J. Shawe-Taylor, A. J. Smola, R. C.Williamson, Estimating the support of a high-dimensional dis-tribution, Neural Computation 13 (7) (2001) 1443–1471 (2001).
+[32]  L. Yin, H. Wang, W. Fan, Active learning based support vectordata description method for robust novelty detection,  Knowl.-Based Syst. 153 (2018) 40–52 (2018).
+[33]  D. J. Olive, Principal Component Analysis, Springer, 2017, pp.189–217 (2017).
+[34]  F. Harrou, F. Kadri, S. Chaabane, C. Tahon, Y. Sun, Improvedprincipal component analysis for anomaly detection:  Applica-tion to an emergency department, Computers & Industrial Engi-neering 88 (2015) 63–77 (2015).
+[35]  R.  Baklouti,  M.  Mansouri,  M.  Nounou,  H.  Nounou,  A.  B.Hamida, Iterated robust kernel fuzzy principal component anal-ysis and application to fault detection, Journal of ComputationalScience 15 (2016) 34–49 (2016).
+[36]  I.  Gulrajani,  F.  Ahmed,  M.  Arjovsky,  V.  Dumoulin,  A.  C.Courville,  Improved  training  of  wasserstein  gans,  in:    An-nual  Conference  on  Neural  Information  Processing  Systems(NeurIPS), 2017, pp. 5767–5777 (2017).
+[37]  A. Gramacki, J. Gramacki, Fft-based fast bandwidth selector formultivariate kernel density estimation, Computational Statistics& Data Analysis 106 (2017) 27–45 (2017).
+[38]  B. Zong, Q. Song, M. R. Min, W. Cheng, C. Lumezanu, D. Cho,H.  Chen,  Deep  autoencoding  gaussian  mixture  model  for  un-supervised anomaly detection, in:  International Conference onLearning Representations (ICLR), 2018 (2018).
+[39]  B. W. Silverman, Density estimation for statistics and data anal-ysis, Routledge, 2018, Ch. 3 (2018).
+[40]  S. Rayana, L. Akoglu, Less is more: Building selective anomalyensembles,  ACM  Trans.  Knowl.  Discov.  Data  10  (4)  (2016)42:1–42:33 (2016).
+[41]  S. Sathe, C. C. Aggarwal, LODES: local density meets spectraloutlier detection,  in:  SIAM International Conference on DataMining (SDM), SIAM, 2016, pp. 171–179 (2016).
+[42]  F. T. Liu, K. M. Ting, Z. Zhou, Isolation forest, in: InternationalConference on Data Mining (ICDM), IEEE, 2008, pp. 413–422(2008).
+[43]  C.  C.  Aggarwal,  S.  Sathe,  Theoretical  foundations  and  algo-rithms  for  outlier  ensembles,  SIGKDD  Explor.  Newsl.  17  (1)(2015) 24–47 (2015).
+[44]  F. Keller, E. M ̈uller, K. B ̈ohm, Hics: High contrast subspaces fordensity-based outlier ranking, in:  International Conference onData Engineering (ICDE), IEEE, 2012, pp. 1037–1048 (2012).
+[45]  J.  Davis,  M.  Goadrich,  The  relationship  between  precision-recall and ROC curves, in: International Conference on MachineLearning (ICML), ACM, 2006, pp. 233–240 (2006).
+[46]  F. T. Liu, K. M. Ting, Z. Zhou, Isolation forest, in: InternationalConference on Data Mining (ICDM), IEEE Computer Society,2008, pp. 413–422 (2008).
+[47]  H. Kriegel, M. Schubert, A. Zimek, Angle-based outlier detec-tion in high-dimensional data, in:  ACM Knowledge Discoveryand Data Mining (KDD), ACM, 2008, pp. 444–452 (2008).
+[48]  H. Kriegel, P. Kr ̈oger, E. Schubert, A. Zimek, Outlier detectionin axis-parallel subspaces of high dimensional data, in: Pacific-Asia  Conference  on  Knowledge  Discovery  and  Data  Mining(PAKDD),  Vol.  5476  of  Lecture  Notes  in  Computer  Science,Springer, 2009, pp. 831–838 (2009).
+[49]  M. Goldstein, A. Dengel, Histogram-based outlier score (hbos):A fast unsupervised anomaly detection algorithm, German Con-ference on Artificial Intelligence (KI-2012):  Poster and DemoTrack (2012) 59–63 (2012).
+[50]  Y. Zhao, Z. Nasrullah, Z. Li, Pyod:  A python toolbox for scalable  outlier  detection,  Journal  of  Machine  Learning  Research20 (96) (2019) 1–7 (2019).
+[51]  H. He, Y. Bai, E. A. Garcia, S. Li, ADASYN: adaptive synthetic sampling  approach  for  imbalanced  learning,  in:  International Joint Conference on Neural Networks (IJCNN), IEEE, 2008, pp.1322–1328 (2008)

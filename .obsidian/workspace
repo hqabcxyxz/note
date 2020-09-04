@@ -16,7 +16,7 @@
         }
       },
       {
-        "id": "8cb72d788d3ebda6",
+        "id": "e7e4a56fabdb1b5e",
         "type": "leaf",
         "state": {
           "type": "markdown",
@@ -93,7 +93,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 302
   },
   "lastOpenFiles": [
     "论文/adVAE 翻译.md",
