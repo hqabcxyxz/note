@@ -358,8 +358,8 @@ Given a significance level $α∈[0,1]$ and a CDF, we can find a decision thresh
 
 给定重要权重$α∈[0,1]$和累加分布函数,我们可以找到一个阈值$s_α$满足$F(s_α)=1−α$.这意味着一个样本的异常分数$s≥s_α$,它有$(1−α)100%$的机率是一个离群点.因为KDE是通过估计正常样本异常分数的间隔来确定阈值的,比起使用人工经验,这样做显然更有目的性和合理性.$α$ 越高,漏报率越低,反之$α$ 越低,误报率越低.如何选择需要权衡.在异常检测任务中,本文推荐$α$ 为0.1.
 
->![](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200903200758.png)
->Figure 3: Work flow of using a trained adVAE model to choose threshold automatically and detect outliers.
+>![](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200903200758.png)  
+>Figure 3: Work flow of using a trained adVAE model to choose threshold automatically and detect outliers.  
 >Fig3:使用训练好的adVAE模型来自动选择阈值和检测离群点的工作流程.
 
 ### 3.6 Detecting Outliers
@@ -411,9 +411,9 @@ The network structures of adVAE used are summarized in Figure 4, where the size 
 
 Fig4展示来adVAE的网络结构.其中每层大小和输入的维度 dim(x)成比例.使用学习率为0.001的adam.以128大小的Batch size训练20000步.每个网络使用 Kaiming 初始化.
 
->![Fig4](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904100701.png)
->Figure 4: Network structure of adVAE. For the encoder, generator, and transformer networks, we adopted fully connected neural networks consisting of three hidden layers. For the individual dataset, we adjust the number of neurons according to the dimension of the training data dim(x)
->Fig4:hyperparameters
+>![Fig4](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904100701.png)  
+>Figure 4: Network structure of adVAE. For the encoder, generator, and transformer networks, we adopted fully connected neural networks consisting of three hidden layers. For the individual dataset, we adjust the number of neurons according to the dimension of the training data dim(x)   
+>Fig4:adVAE的网络结构,对于编码器,生成器,变换网络,我们都使用一个三层的全链接网络.对于每个单独的数据集,我们将根据数据维度调增神经元数量.
 
 As shown in Table 2, there are four hyperparameters in adVAE model. $λ$is derived from plain VAE, and the other three new parameters are used to maintain the balance between the original training objective and the additional discrimination objective. The larger the $γ$ or $m_z$,the larger the proportion of the encoder discrimination objective in the total loss. The larger the $m_x$, the larger the proportion of the generator discrimination objective.
 
@@ -445,8 +445,8 @@ All deep-learning methods are implemented in pytorch and share the same optimize
 >Figure 5:  Structure of E-adVAE. As adVAE is formed by adding a discrimination objective to both the generator and the encoder of plain VAE, we also propose an ablation model E-adVAE, in which only the encoder has the discrimination objective
 >Fig5:E-adVAE结构.即仅在编码器上添加判别目标.
 
->![Fig6](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904110548.png)
->Figure 6: Structure of G-adVAE. This is the other ablation model G-adVAE: only the generator has the discrimination objective.
+>![Fig6](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904110548.png)   
+>Figure 6: Structure of G-adVAE. This is the other ablation model G-adVAE: only the generator has the discrimination objective.   
 >Fig6:G-adVAE结构.仅在生成器上添加判别目标.
 
 ### 4.5 Results and Discussion
@@ -482,12 +482,12 @@ In conclusion, the AE and VAE methods are better than most of the other anomaly 
 
 综上，AE和VAE的方法比其他异常检测方法要好。其中 adVAE 通过自对抗机制学习离群点，这大大加强来它检测异常的能力，取得来 sort 性能。我们相信自对抗机制有着巨大的潜力，值得推广到其他模式识别任务上。
 
-> ![Tab3](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904111218.png)
-> Table 3:  AP and AUC comparisons between the baselines and adVAE. AP is a better metric than AUC in anomaly detection.  Note that the best result is typeset in bold and the second best in italic typeface. The dataset names are represented as their first three letters and Avg. represents the average.
+> ![Tab3](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904111218.png)   
+> Table 3:  AP and AUC comparisons between the baselines and adVAE. AP is a better metric than AUC in anomaly detection.  Note that the best result is typeset in bold and the second best in italic typeface. The dataset names are represented as their first three letters and Avg. represents the average.   
 > Tab3:adVAE 和一些基线方法的AP和AUC。AP比AUC在异常检测上更加有优势。粗体是最好结果，斜体是次好的。每个数据集名称用前三个字母替代，Avg.代表来平均值。
 
->![Tab4](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904111325.png)
->Table 4: Recall and F1 score comparisons between the baselines and adVAE. For all reconstruction-based methods (AE, VAE, DAGMM, G-adVAE,E-adVAE, and adVAE), the significance level $α$ was set to 0.1. Note that the best result is typeset in bold and the second best in italic typeface. The dataset names are represented as their first three letters and Avg. represents the average.
+>![Tab4](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904111325.png)   
+>Table 4: Recall and F1 score comparisons between the baselines and adVAE. For all reconstruction-based methods (AE, VAE, DAGMM, G-adVAE,E-adVAE, and adVAE), the significance level $α$ was set to 0.1. Note that the best result is typeset in bold and the second best in italic typeface. The dataset names are represented as their first three letters and Avg. represents the average.   
 >Tab4:基线方法和adVAE的召回和F1分数.
 
 ### 4.6. Ablation Study
@@ -512,16 +512,16 @@ In conclusion,  benefiting from better discrimination abilities,  adVAE  has  be
 
 综上,收益于更好的分辨能力,adVAE 有更好的异常检测性能.这也证明了本文提出的自对抗即使能够通过定制声称模型来适合离群点检测任务.
 
->![Fig7](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904114855.png)
->Figure  7:   To  independently  verify  the  sensitivity  of  the  generator to anomalies, we add different noises to the normal latent variables.Noise 1:  adding a uniform distribution $U(0,1)$;  Noise 2:  adding a Gaussian distribution $N(0,1)$; Noise 3:  adding a constant value 0.5;Noise 4:  multiplying the last half dimensions of the latent vector by 0.5; Noise 5: setting the first half dimensions of the latent vector to 0.The larger the Wasserstein distance, the better the anomaly detection capability.  The generator of adVAE achieves the best discrimination performance, and G-adVAE’s generator is the second best. Benefiting from the adversarial training between E and G, the detection performance of the E-adVAE’s generator is also improved in comparison to plain VAE.
+>![Fig7](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904114855.png)   
+>Figure  7:   To  independently  verify  the  sensitivity  of  the  generator to anomalies, we add different noises to the normal latent variables.Noise 1:  adding a uniform distribution $U(0,1)$;  Noise 2:  adding a Gaussian distribution $N(0,1)$; Noise 3:  adding a constant value 0.5;Noise 4:  multiplying the last half dimensions of the latent vector by 0.5; Noise 5: setting the first half dimensions of the latent vector to 0.The larger the Wasserstein distance, the better the anomaly detection capability.  The generator of adVAE achieves the best discrimination performance, and G-adVAE’s generator is the second best. Benefiting from the adversarial training between E and G, the detection performance of the E-adVAE’s generator is also improved in comparison to plain VAE.   
 >图7:为独立验证生成器对异常点的敏感性,我们添加来不同的噪声到正常隐变量.噪声1:平均分布噪声.噪声2:高斯分布.噪声3:哼定制0.5.噪声4:对一半维度的隐变量乘以0.5.噪声5:将隐变量的前一半置零.Wasserstein 距离越大,异常检测能力越强.adVAE 的生成器有最好的性能,G-adVAE 的生成器次之.受益于E和G的对抗训练,E-adVAE 的生成器比一般的VAE也有更好的检测性能.
 
->![Fig8](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904115005.png)
->Figure 8: T-SNE visualization of the latent space in the letter dataset. The orange points represent the latent variables encoded from normal data, and the blue points are encoded from anomalous data. The KDE curves at the top indicate that adVAE’s latent space overlaps are smaller than VAE’s,which means that the encoder of adVAE has a better ability to distinguish the normal data from the outliers.  The visualization plot of G-adVAE does not show significant advantages compared to plain VAE, and E-adVAE’s plot proves that the encoder does benefit from the discrimination objective.
+>![Fig8](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904115005.png)   
+>Figure 8: T-SNE visualization of the latent space in the letter dataset. The orange points represent the latent variables encoded from normal data, and the blue points are encoded from anomalous data. The KDE curves at the top indicate that adVAE’s latent space overlaps are smaller than VAE’s,which means that the encoder of adVAE has a better ability to distinguish the normal data from the outliers.  The visualization plot of G-adVAE does not show significant advantages compared to plain VAE, and E-adVAE’s plot proves that the encoder does benefit from the discrimination objective.   
 >图8:T-SEN将 letter 数据集的隐空间可视化.橙色点代表了正常数据的隐编码,蓝色是异常.头上KDE曲线显示来 adVAE 的隐空间重叠比VAE的更小,这意味着 adVAE 的编码器有更强的离群点检测能力.G-adVAE 的可视化显示和普通 VAE差距不大,而E-adVAE 图则证明来编码器确实有从判别目标中获益.
 
->![Fig9](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904115104.png)
->Figure 9: Robustness experiment results. (a) $λ$ is the hyperparameter derived from VAE, which has a significant impact on performance, and hence it should e set carefully. (b)$γ$ and $m_z$ have a similar role: enhancing the encoder’s discrimination objective. Because adVAE with $γ=0.01$ achieves the best results in all datasets, we suggest fixing $γ$ as 0.01 and tuning $m_z$ instead. (c) The model performance is not sensitive to $m_z$, and it should be considered to simply set it between 20 and 40. (d)$m_x$ is used to enhance the generator’s discrimination objective, and the choice of this parameter is not very critical.  For convenience, we fixed it as 2 for all tests.  (e) As long as the scale of the neural network is large enough, the number of network layers or the number of neurons will not have a significant impact on the results.  (f) Contaminated training data negatively affect the detection accuracy and adVAE is more sensitive, especially when the contamination ratio is larger than 3%, because the additional discrimination objectives of adVAE are more susceptible to contamination data.
+>![Fig9](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200904115104.png)   
+>Figure 9: Robustness experiment results. (a) $λ$ is the hyperparameter derived from VAE, which has a significant impact on performance, and hence it should e set carefully. (b)$γ$ and $m_z$ have a similar role: enhancing the encoder’s discrimination objective. Because adVAE with $γ=0.01$ achieves the best results in all datasets, we suggest fixing $γ$ as 0.01 and tuning $m_z$ instead. (c) The model performance is not sensitive to $m_z$, and it should be considered to simply set it between 20 and 40. (d)$m_x$ is used to enhance the generator’s discrimination objective, and the choice of this parameter is not very critical.  For convenience, we fixed it as 2 for all tests.  (e) As long as the scale of the neural network is large enough, the number of network layers or the number of neurons will not have a significant impact on the results.  (f) Contaminated training data negatively affect the detection accuracy and adVAE is more sensitive, especially when the contamination ratio is larger than 3%, because the additional discrimination objectives of adVAE are more susceptible to contamination data.   
 >图9:鲁棒性实验结果.(a)$λ$是从VAE继承来的超参,对于性能的影响很大,要小心设置.(b)$γ$ 和$m_z$作用类似,用于加强编码器的判别目标,因为 adVAE 在$γ=0.01$时取得来最好的结果,因此我们建议将 $γ$固定0.01,调整$m_z$就行.(c)$m_z$对模型影响不大,建议设置在20到40.(d)$m_x$是用于将加强生成器的判别目标的,且该参数影响不大,为了简化实验,我们固定为2.(e)只要神经网络规模足够大,网络层数量或神经元数量就不会对结果产生显著影响.(f)脏的训练数据对检测精度有负作用,并且 adVAE 对此更加敏感,尤其是当污染率大于3%.这是因为额外的判别目标更易受脏数据影响.
 
 ### 4.7 Robustness Experiments
