@@ -10,7 +10,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "论文/adVAE 翻译.md",
+            "file": "经典博文/From GAN to WGAN.md",
             "mode": "source"
           }
         }
@@ -62,7 +62,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "论文/adVAE 翻译.md"
+                "file": "经典博文/From GAN to WGAN.md"
               }
             }
           },
@@ -72,7 +72,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "论文/adVAE 翻译.md"
+                "file": "经典博文/From GAN to WGAN.md"
               }
             }
           }
@@ -84,8 +84,8 @@
     "width": 302
   },
   "lastOpenFiles": [
-    "论文/adVAE 翻译.md",
     "经典博文/From GAN to WGAN.md",
+    "论文/adVAE 翻译.md",
     "Wasserstein 距离.md",
     "Wasserstein距离.md",
     "WGAN-GP.md"
