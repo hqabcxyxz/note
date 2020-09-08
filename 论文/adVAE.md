@@ -506,7 +506,7 @@ To  illustrate  the  impact  of  different  designs  on  the model results, we d
 (iii)  To  independently  verify  the  anomaly  detection capabilities of the generator, we synthesize latent outlier variables $z_o$ by adding five types of noise to the normal latent variables $z_n$.  These latent variables are the outputs  of  the  five  corresponding  encoders  and  the  input data of the encoders are 200 normal samples $x_n$ from the pen [44] datasets The normal scores vector $s_n∈R^{200}$ can be calculated from $x_n$ and $G(z_n)$, and the anomalous scores vector $s_o∈R^{200}$ can be calculated from $x_n$ and $G(z_o)$ (as in section 3.4).  Afterwards, the Wasserstein distance between $s_n$ and $s_o$ is used to measure the detection capabilities of each generator. Figure 7 indicates that the generator G of adVAE also has a better ability to discriminate latent variables.
 
 (iii)为了分开验证生成器的异常检测能力,我们通过对正常隐变量$z_n$添加五种噪声来合成来隐离群变量$z_o$.这些
-隐变量是5个对应编码器的数据,输入数据是来自pen数据集的200张正常样本$x_n$.正常分数向量$s_n∈R^{200}$可以根据$x_n$和$G(z_n)$计算出来,异常分数向量$s_o∈R^{200}$可以根据$x_n$ 和 $G(z_o)$计算(如3.4节).$s_n$ 和$s_o$之间的[[Wasserstein 距离]]被用来衡量每个生成器的检测能力.图7展示来adVAE的生成器G有更好的能力分辨隐变量.
+隐变量是5个对应编码器的数据,输入数据是来自pen数据集的200张正常样本$x_n$.正常分数向量$s_n∈R^{200}$可以根据$x_n$和$G(z_n)$计算出来,异常分数向量$s_o∈R^{200}$可以根据$x_n$ 和 $G(z_o)$计算(如3.4节).$s_n$ 和$s_o$之间的[[From GAN to WGAN|Wasserstein]]距离被用来衡量每个生成器的检测能力.图7展示来adVAE的生成器G有更好的能力分辨隐变量.
 
 In conclusion,  benefiting from better discrimination abilities,  adVAE  has  better  anomaly  detection  performance.  This proves that the proposed self-adversarial mechanism is a prospective way of customizing generative models to fit outlier detection tasks.
 

@@ -4,14 +4,25 @@
     "type": "split",
     "children": [
       {
-        "id": "bddea40871687e57",
+        "id": "53c1dd4a60c67e4a",
         "type": "leaf",
         "active": true,
         "state": {
           "type": "markdown",
           "state": {
-            "file": "经典博文/From GAN to WGAN.md",
+            "file": "论文/object365 重点摘要.md",
             "mode": "source"
+          }
+        }
+      },
+      {
+        "id": "c248400aba879b59",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "论文/object365 重点摘要.md",
+            "mode": "preview"
           }
         }
       }
@@ -46,7 +57,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "04b2c463eb8dcdb8",
@@ -62,7 +74,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "经典博文/From GAN to WGAN.md"
+                "file": "论文/object365 重点摘要.md"
               }
             }
           },
@@ -72,7 +84,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "经典博文/From GAN to WGAN.md"
+                "file": "论文/object365 重点摘要.md"
               }
             }
           }
@@ -84,10 +96,10 @@
     "width": 302
   },
   "lastOpenFiles": [
+    "论文/object365 重点摘要.md",
+    "object365 重点摘要.md",
     "经典博文/From GAN to WGAN.md",
-    "论文/adVAE 翻译.md",
-    "Wasserstein 距离.md",
-    "Wasserstein距离.md",
-    "WGAN-GP.md"
+    "论文/adVAE.md",
+    "基础知识点/Wasserstein.md"
   ]
 }
