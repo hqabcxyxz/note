@@ -12,7 +12,10 @@
     "custom-css": true,
     "open-with-default-app": true,
     "page-preview": true,
-    "outline": true
+    "outline": true,
+    "tag-pane": true,
+    "starred": true,
+    "templates": false
   },
   "vimMode": true,
   "spellcheck": true,
