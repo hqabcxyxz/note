@@ -10,7 +10,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "编程基础/python/Python描述器引导(翻译).md",
+            "file": "编程基础/python/python 数据模型.md",
             "mode": "preview"
           }
         }
@@ -72,7 +72,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "编程基础/python/Python描述器引导(翻译).md"
+                "file": "编程基础/python/python 数据模型.md"
               }
             }
           },
@@ -82,7 +82,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "编程基础/python/Python描述器引导(翻译).md"
+                "file": "编程基础/python/python 数据模型.md"
               }
             }
           },
@@ -101,6 +101,7 @@
     "width": 147
   },
   "lastOpenFiles": [
+    "编程基础/python/python 数据模型.md",
     "编程基础/python/Python描述器引导(翻译).md",
     "编程基础/python/Python with 语句.md",
     "编程基础/python/Python 中的类型标注.md",
@@ -109,7 +110,6 @@
     "Vim/vim cheatsheet 杂记.md",
     "GAN.md",
     "经典博文/From GAN to WGAN.md",
-    "论文/object365 重点摘要.md",
-    "object365 重点摘要.md"
+    "论文/object365 重点摘要.md"
   ]
 }
