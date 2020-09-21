@@ -15,7 +15,8 @@
     "outline": true,
     "tag-pane": true,
     "starred": true,
-    "templates": false
+    "templates": false,
+    "translucency": true
   },
   "vimMode": true,
   "spellcheck": true,
@@ -32,5 +33,6 @@
     "VAEs",
     "hyperparameters"
   ],
-  "alwaysUpdateLinks": true
+  "alwaysUpdateLinks": true,
+  "fileSortOrder": "alphabetical"
 }

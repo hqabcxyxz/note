@@ -4,14 +4,14 @@
     "type": "split",
     "children": [
       {
-        "id": "53c1dd4a60c67e4a",
+        "id": "1aeaba9da171a82d",
         "type": "leaf",
         "active": true,
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Vim/vim cheatsheet 杂记.md",
-            "mode": "source"
+            "file": "编程基础/python/Python描述器引导(翻译).md",
+            "mode": "preview"
           }
         }
       }
@@ -72,7 +72,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Vim/vim cheatsheet 杂记.md"
+                "file": "编程基础/python/Python描述器引导(翻译).md"
               }
             }
           },
@@ -82,7 +82,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Vim/vim cheatsheet 杂记.md"
+                "file": "编程基础/python/Python描述器引导(翻译).md"
               }
             }
           },
@@ -94,15 +94,19 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 302
+    "width": 147
   },
   "lastOpenFiles": [
+    "编程基础/python/Python描述器引导(翻译).md",
+    "编程基础/python/Python with 语句.md",
+    "编程基础/python/Python 中的类型标注.md",
+    "编程基础/python/Untitled.md",
     "Untitled.md",
+    "Vim/vim cheatsheet 杂记.md",
     "GAN.md",
     "经典博文/From GAN to WGAN.md",
     "论文/object365 重点摘要.md",
