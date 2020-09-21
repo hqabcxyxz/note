@@ -34,5 +34,9 @@
     "hyperparameters"
   ],
   "alwaysUpdateLinks": true,
-  "fileSortOrder": "alphabetical"
+  "fileSortOrder": "alphabetical",
+  "strictLineBreaks": true,
+  "useMarkdownLinks": true,
+  "foldIndent": true,
+  "foldHeading": true
 }

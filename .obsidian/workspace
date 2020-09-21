@@ -4,7 +4,7 @@
     "type": "split",
     "children": [
       {
-        "id": "1aeaba9da171a82d",
+        "id": "4a4408914d9d69eb",
         "type": "leaf",
         "active": true,
         "state": {
@@ -40,7 +40,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "GAN"
+                "query": ""
               }
             }
           },
@@ -56,7 +56,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "04b2c463eb8dcdb8",
@@ -94,22 +95,19 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 147
+    "width": 650,
+    "collapsed": true
   },
   "lastOpenFiles": [
     "编程基础/python/python 数据模型.md",
+    "编程基础/python/python数据模型xmind.md",
     "编程基础/python/Python描述器引导(翻译).md",
     "编程基础/python/Python with 语句.md",
-    "编程基础/python/Python 中的类型标注.md",
-    "编程基础/python/Untitled.md",
-    "Untitled.md",
-    "Vim/vim cheatsheet 杂记.md",
-    "GAN.md",
-    "经典博文/From GAN to WGAN.md",
-    "论文/object365 重点摘要.md"
+    "编程基础/python/Python 中的类型标注.md"
   ]
 }
