@@ -1,3 +1,5 @@
+#python #类型标注
+
 # Python 中的类型标注
 
 静态语言与动态语言孰优孰劣一直是网络上争论不休的话题。在这篇论文中（[英文原文](https://cacm.acm.org/magazines/2017/10/221326-a-large-scale-study-of-programming-languages-and-code-quality-in-github/abstract)，[中文翻译](https://www.zcfy.cc/article/a-large-scale-study-of-programming-languages-and-code-quality-in-github)），研究者通过统计 GitHub 上的不同语言的热门项目，的确得出了静态语言比动态语言更好维护的结论。

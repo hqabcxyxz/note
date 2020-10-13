@@ -1,3 +1,4 @@
+#python #描述器
 [toc]
 
 原文:https://pyzh.readthedocs.io/en/latest/Descriptor-HOW-TO-Guide.html
