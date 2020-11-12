@@ -1,4 +1,5 @@
 #python #上下文管理器
+
 原文:[浅谈 Python 的 with 语句](https://developer.ibm.com/zh/technologies/python/articles/os-cn-pythonwith/)
 [toc]
 # 引言
