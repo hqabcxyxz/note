@@ -15,8 +15,8 @@ age = 18
 name = "武沛齐"
 ```
 
-![补图](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113100055.png)
-![refchain_1](Attachments/refchain_1.png)
+[补图](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113100055.png)
+![refchain_1](../../Attachments/refchain_1.png)
 
 
 ### 1.2 引用计数器
@@ -31,8 +31,8 @@ nickname = name
 
 上述代码表示内存中有 18 和 “武沛齐” 两个值，他们的引用计数器分别为：1、2 。
 
-![补图2](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113100340.png)
-![rechain_2](Attachments/rechain_2.png)
+[补图2](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113100340.png)
+![rechain_2](../../Attachments/rechain_2.png)
 
 当值被多次引用时候，不会在内存中重复创建数据，而是`引用计数器+1` 。 当对象被销毁时候同时会让`引用计数器-1`,如果引用计数器为0，则将对象从 refchain 链表中摘除，同时在内存中进行销毁（暂不考虑缓存等特殊情况）。
 
@@ -95,13 +95,13 @@ struct gc_generation generations[NUM_GENERATIONS] = {
 
 第一步：当创建对象 `age=19` 时，会将对象添加到 refchain 链表中。
 
-![补图3](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113101207.png)
-![refchain_3](Attachments/refchain_3.png)
+[补图3](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113101207.png)
+![refchain_3](../../Attachments/refchain_3.png)
 
 第二步：当创建对象 `num_list = [11,22]` 时，会将列表对象添加到 refchain 和 generations 0代中。
 
-![补图](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113101226.png)
-![refchain_4](Attachments/refchain_4.png)
+[补图](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113101226.png)
+![refchain_4](../../Attachments/refchain_4.png)
 
 
 第三步：新创建对象使 generations 的0代链表上的对象数量大于阈值700时，要对链表上的对象进行扫描检查。
@@ -354,7 +354,7 @@ typedef struct {
 - 字符串包含中文等，则每个字符用2个字节表示，即：ucs2
 - 字符串包含 emoji 等，则每个字符用4个字节表示，即：ucs4
 
-![补图](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113102218.png)
+[补图](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113102218.png)
 ![pythongc](Attachments/pythongc.png)
 ### 2.3 Float 类型
 
