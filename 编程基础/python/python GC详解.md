@@ -32,7 +32,8 @@ nickname = name
 上述代码表示内存中有 18 和 “武沛齐” 两个值，他们的引用计数器分别为：1、2 。
 
 [补图2](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113100340.png)
-![rechain_2](../../Attachments/rechain_2.png)
+
+![refchain_2](../../Attachments/refchain_2.png)
 
 当值被多次引用时候，不会在内存中重复创建数据，而是`引用计数器+1` 。 当对象被销毁时候同时会让`引用计数器-1`,如果引用计数器为0，则将对象从 refchain 链表中摘除，同时在内存中进行销毁（暂不考虑缓存等特殊情况）。
 
@@ -355,7 +356,7 @@ typedef struct {
 - 字符串包含 emoji 等，则每个字符用4个字节表示，即：ucs4
 
 [补图](https://raw.githubusercontent.com/captainfffsama/MarkDownPics/master/image/20201113102218.png)
-![pythongc](Attachments/pythongc.png)
+![pythongc](../../Attachments/pythongc.png)
 ### 2.3 Float 类型
 
 #### 2.3.1 创建
