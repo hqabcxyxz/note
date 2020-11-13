@@ -238,7 +238,7 @@ loop.run_until_complete(asyncio.wait(tasks))
 
 ### 3.1 事件循环
 
-事件循环，可以把他当做是一个 while 循环，这个 while 循环在周期性的运行并执行一些`任务`，在特定条件下终止循环。
+事件循环[^1]，可以把他当做是一个 while 循环，这个 while 循环在周期性的运行并执行一些**任务**，在特定条件下终止循环。
 
 ```python
 # 伪代码
@@ -269,7 +269,7 @@ loop = asyncio.get_event_loop()
 
 协程函数，定义形式为 [`async def`](https://docs.python.org/zh-cn/3.8/reference/compound_stmts.html#async-def) 的函数。
 
-协程对象，调用 *协程函数* 所返回的对象。
+协程对象，调用 *协程函数* 所返回的对象。 ^43125f
 
 ```python
 # 定义一个协程函数
@@ -284,7 +284,7 @@ result = func()
 
 #### 3.2.1 基本应用
 
-程序中，如果想要执行协程函数的内部代码，需要 **事件循环** 和 **协程对象** 配合才能实现，如：
+程序中，如果想要执行协程函数的内部代码，需要 **事件循环** 和 **[协程对象](#%5E43125f)** 配合才能实现，如：
 
 ```python
 import asyncio
@@ -309,7 +309,7 @@ asyncio.run(result)
 
 #### 3.2.2 await
 
-await 是一个只能在协程函数中使用的关键字，用于遇到 IO 操作时挂起 当前协程（任务），当前协程（任务）挂起过程中 事件循环可以去执行其他的协程（任务），当前协程IO处理完成时，可以再次切换回来执行 await 之后的代码。代码如下：
+==await 是一个只能在协程函数中使用的关键字==，用于遇到 IO 操作时挂起 当前协程（任务），当前协程（任务）挂起过程中 事件循环可以去执行其他的协程（任务），当前协程IO处理完成时，可以再次切换回来执行 await 之后的代码。代码如下：
 
 **示例1：**
 
@@ -385,7 +385,7 @@ asyncio.run( func() )
 >
 >   When a coroutine is wrapped into a *Task* with functions like [`asyncio.create_task()`](https://docs.python.org/3.8/library/asyncio-task.html#asyncio.create_task) the coroutine is automatically scheduled to run soon。
 
-Tasks 用于并发调度协程，通过 `asyncio.create_task(协程对象)` 的方式创建 Task 对象，这样可以让协程加入事件循环中等待被调度执行。除了使用 `asyncio.create_task()` 函数以外，还可以用低层级的 `loop.create_task()` 或 `ensure_future()` 函数。不建议手动实例化 Task 对象。
+[Task  对象](Task%20%20%E5%AF%B9%E8%B1%A1.md)用于并发调度协程，通过 `asyncio.create_task(协程对象)` 的方式创建 Task 对象，这样可以让协程加入事件循环中等待被调度执行。除了使用 `asyncio.create_task()` 函数以外，还可以用低层级的 `loop.create_task()` 或 `ensure_future()` 函数。不建议手动实例化 Task 对象。
 
 本质上是将协程对象封装成 task 对象，并将协程立即加入事件循环，同时追踪协程的状态。
 
@@ -483,7 +483,7 @@ done,pending = asyncio.run( asyncio.wait(coroutine_list) )
 
 >   A `Future`is a special **low-level** awaitable object that represents an **eventual result** of an asynchronous operation.
 
-asyncio 中的 Future 对象是一个相对更偏向底层的可对象，通常我们不会直接用到这个对象，而是直接使用 Task 对象来完成任务的并和状态的追踪。（ Task 是 Future 的子类 ）
+asyncio 中的 [Future 对象](Future%20%E5%AF%B9%E8%B1%A1)是一个相对更偏向底层的可对象，通常我们不会直接用到这个对象，而是直接使用 Task 对象来完成任务的并和状态的追踪。（ Task 是 Future 的子类 ）
 
 Future 为我们提供了异步编程中的 最终结果 的处理（ Task 类也具备状态处理的功能）。
 
@@ -688,7 +688,7 @@ async def func():
 asyncio.run(func())
 ```
 
-异步迭代器其实没什么太大的作用，只是支持了async for语法而已。
+异步迭代器其实没什么太大的作用，只是支持了 async for 语法而已。
 
 #### 3.2.6 异步上下文管理器
 
@@ -763,9 +763,9 @@ asyncio.run(...)
 
 为了更好理解，上述所有示例的 IO 情况都是以 `asyncio.sleep` 为例，而真实的项目开发中会用到很多 IO 的情况。
 
-### 5.1 异步Redis 
+### 5.1 异步 Redis 
 
-当通过 python 去操作 redis 时，链接、设置值、获取值 这些都涉及网络 IO 请求，使用 asycio 异步的方式可以在IO等待时去做一些其他任务，从而提升性能。
+当通过 python 去操作 redis 时，链接、设置值、获取值 这些都涉及网络 IO 请求，使用 asyncio 异步的方式可以在IO等待时去做一些其他任务，从而提升性能。
 
 安装 Python 异步操作 redis 模块
 
@@ -802,7 +802,7 @@ async def execute(address, password):
 asyncio.run(execute('redis://47.93.4.198:6379', "root!2345"))
 ```
 
-示例2：连接多个redis做操作（遇到IO会切换其他任务，提供了性能）。
+示例2：连接多个 redis 做操作（遇到IO会切换其他任务，提供了性能）。
 
 ```python
 import asyncio
@@ -1098,3 +1098,8 @@ if __name__ == '__main__':
 ## 总结
 
 为了提升性能越来越多的框架都在向异步编程靠拢，例如：sanic、tornado、django3.0、django channels 组件 等，用更少资源可以做处理更多的事，何乐而不为呢。
+
+
+
+## 其他
+[^1]:  资料待补
