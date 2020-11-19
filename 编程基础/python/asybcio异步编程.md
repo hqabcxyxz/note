@@ -269,7 +269,7 @@ loop = asyncio.get_event_loop()
 
 协程函数，定义形式为 [`async def`](https://docs.python.org/zh-cn/3.8/reference/compound_stmts.html#async-def) 的函数。
 
-协程对象，调用 *协程函数* 所返回的对象。 ^43125f
+协程对象，调用 *协程函数* 所返回的对象。 
 
 ```python
 # 定义一个协程函数
@@ -284,7 +284,7 @@ result = func()
 
 #### 3.2.1 基本应用
 
-程序中，如果想要执行协程函数的内部代码，需要 **事件循环** 和 **[协程对象](#%5E43125f)** 配合才能实现，如：
+程序中，如果想要执行协程函数的内部代码，需要 **事件循环** 和 **[协程对象](%E5%8D%8F%E7%A8%8B%E5%AF%B9%E8%B1%A1)** 配合才能实现，如：
 
 ```python
 import asyncio
