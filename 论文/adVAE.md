@@ -62,6 +62,7 @@ The encoder can be trained to discriminate the original sample and its reconstru
 
 编码器可以被训练成可以判别原始数据和重建数据,但我们没有任何的异常隐编码来训练生成器.为了合成异常隐编码,我们提出来高斯异常假说来描述正常和异常隐空间的关系.Fig.1(a)描述我们的假设;异常和正常先验分布都是高斯分布且在隐空间上由重叠.这是一个脆弱但是合理的假设,因为高斯分布在自然界是普遍存在的.Fig.1(b)展示来本文自对抗机制的基本结构.编码器被训练来判别原始样本$x$和重建样本$x_r$,生成器则尝试区别由编码器编码的正常隐向量$z$和由$T$合成的异常样本$z_T$.这些被添加的新目标不仅使G和E有了判别能力,还引入来额外的正则化机制来防止模型过拟合.
 
+
 >![Fig 1](https://raw.githubusercontent.com/hqabcxyxz/MarkDownPics/master/image/20200901183009.png)
 Figure 1: (a) Our assumption is that the normal data prior distribution is a Gaussian distribution close to $N(0,I)$, and the anomalous prior is another Gaussian distribution, whose mean and variance are unknown and different from the normal prior, with overlaps in the latent space. (b) This figure illustrates the basic structure of our self-adversarial mechanism. We propose additional discrimination objectives for both the encoder and the generator by adding two competitive relationships.$x$ and $z$ are normal items because of the anomaly-free training dataset.$x_r$ and $z_T$ can be regarded as anomalous item.G is trained to distinguish $z$ and $z_T$, and E tries to discern $x$ and $x_r$.  
 图1:(a) 我们假设正常样本先验分布是一个接近$N(0,1)$的高斯分布,异常先验是另外一个高斯分布,其期望和方差未知且都和正常先验分布不一样,并且两者在隐空间中有重叠区域. (b) 本图展示来本文自对抗机制的大致结构.通过添加两个竞争关系,为编码器和生成器设定来额外的判别目标.$x$和$z$是正常样本.$x_r$和$z_T$被视为异常样本.G被训练来区分$z$和$z_T$,E尝试区分$x$和$x_r$
