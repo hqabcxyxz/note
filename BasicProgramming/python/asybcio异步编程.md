@@ -483,7 +483,7 @@ done,pending = asyncio.run( asyncio.wait(coroutine_list) )
 
 >   A `Future`is a special **low-level** awaitable object that represents an **eventual result** of an asynchronous operation.
 
-asyncio 中的 [Future 对象](Future%20%E5%AF%B9%E8%B1%A1)是一个相对更偏向底层的可对象，通常我们不会直接用到这个对象，而是直接使用 Task 对象来完成任务的并和状态的追踪。（ Task 是 Future 的子类 ）
+asyncio 中的 [Future 对象](Future%20%E5%AF%B9%E8%B1%A1.md)是一个相对更偏向底层的可对象，通常我们不会直接用到这个对象，而是直接使用 Task 对象来完成任务的并和状态的追踪。（ Task 是 Future 的子类 ）
 
 Future 为我们提供了异步编程中的 最终结果 的处理（ Task 类也具备状态处理的功能）。
 
