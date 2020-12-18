@@ -1,6 +1,6 @@
 #pytorch
 
- 在 [pytorch](pytorch.md)  创建 DataLoader 时,设置 ``pin_memory=True``,表示使用[锁页内存](#%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98),此时意味着生成的 Tensor 数据最开始是属于内存中的锁页内存,这样将内存中的 Tensor 转义到 GPU 上的显存会更加快速一些.
+ 在 [pytorch](pytorch.md)  创建 DataLoader 时,设置 ``pin_memory=True``,表示使用[锁页内存](pin_memory.md#%E9%94%81%E9%A1%B5%E5%86%85%E5%AD%98),此时意味着生成的 Tensor 数据最开始是属于内存中的锁页内存,这样将内存中的 Tensor 转义到 GPU 上的显存会更加快速一些.
  当计算机内存充足时,设置 ``pin_memory=True``.当系统卡主或者交换内存Swap适用过多的时候,注意设置 ``pin_memory=False``.注意 pin_memory 默认是 False.
 
 # 锁页内存
