@@ -23,5 +23,9 @@
 ### torch.nn.parallel.DistributedDataParallel
 本方法比起 DataParallel 还要多加一步,即 `init_process_group`.并且本方法是基于多进程,不受 GIL 限制.并且每个模型副本是在一开始的时候构建的,而不是在前向传播的时候广播出去的.另外还用了一些其他的优化技术,具体可以参见 https://arxiv.org/abs/2006.15704. 
 
+注意点:
+- 由于 DDP 是借助 c10d 的 `ProcessGroup` 来进行通信,因此,程序在构建 DDP 前须先创建 `ProcessGroup`
+
 ## 参考资料:
 - https://pytorch.org/tutorials/beginner/dist_overview.html
+- https://pytorch.org/docs/stable/notes/ddp.html
