@@ -20,6 +20,8 @@
 可以只改一行代码,但是性能不是最好的,不推荐使用.详细参加:https://pytorch.org/docs/master/generated/torch.nn.DataParallel.html
 个人理解是这个是多线程的,主进程读入 batch ,然后起多个线程将 batch拆分 N 份,将自身模型参数复制 N 份到 N 个显卡,然后将多个显卡计算的梯度,通过多线程拿回主进程,然后主进程累加之后更新参数,然后重复.耗时点是多线程受 GIL 限制,且只有主进程更新权重,因此每次计算一个新的 batch 都需要将模型参数重新复制各个显卡上.
 
+该方法属于使用的数据同步，同步更新，Parameter Server更新参数的方法。且使用单个进程管理所有GPU，汇总梯度用的是单个GPU，因此 GPU 负载不均衡，且网络通信负载大，不支持多机，不支持混合精度训练。
+
 ### torch.nn.parallel.DistributedDataParallel
 本方法比起 DataParallel 还要多加一步,即 `init_process_group`.并且本方法是基于多进程,不受 GIL 限制.并且每个模型副本是在一开始的时候构建的,而不是在前向传播的时候广播出去的.另外还用了一些其他的优化技术,具体可以参见 https://arxiv.org/abs/2006.15704. 
 
