@@ -22,7 +22,7 @@
 
 该方法属于使用的数据同步，同步更新，Parameter Server更新参数的方法。且使用单个进程管理所有GPU，汇总梯度用的是单个GPU，因此 GPU 负载不均衡，且网络通信负载大，不支持多机，不支持混合精度训练。
 
-### torch.nn.parallel.DistributedDataParallel
+### [torch.nn.parallel.DistributedDataParallel](./distributed_data_parallel.md)
 本方法比起 DataParallel 还要多加一步,即 `init_process_group`.并且本方法是基于多进程,不受 GIL 限制.并且每个模型副本是在一开始的时候构建的,而不是在前向传播的时候广播出去的.另外还用了一些其他的优化技术,具体可以参见 https://arxiv.org/abs/2006.15704. 
 
 注意点:
