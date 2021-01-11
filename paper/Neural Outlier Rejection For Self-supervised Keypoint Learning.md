@@ -1,4 +1,5 @@
-#无监督 #单应性估计 #图像配准
+#自监督
+#单应性估计 #图像配准
 
 [toc]
 
@@ -10,15 +11,16 @@
 1. 引入了 IO-Net, 用来做自监督的关键点检测,描述和配对
 2. 引入了 KeyPointNet,主要用来做关键点检测和描述
 
-We design the network toallow local keypoint aggregation to avoid artifacts due to spatial discretizationscommonly used for this task, and we improve fine-grained keypoint descriptorperformance by taking advantage of efficient sub-pixel convolutions to upsam-ple the descriptor feature-maps to a higher operating resolution.
+本文通过设计了局部关键点聚合来避免空间离散化导致的一些问题.通过一个像素混洗上采样来提升描述符的性能.
+We design the network to allow local keypoint aggregation to avoid artifacts due to spatial discretizations commonly used for this task, and we improve fine-grained keypoint descriptor performance by taking advantage of efficient sub-pixel convolutions to upsample the descriptor feature-maps to a higher operating resolution.
 
 ## 引言
 贡献:
-1. 引入 IO-Net.使用neurally-guided outlier-rejection scheme 作为辅助任务. While the keypoint network is fully self-supervised, the net-work is able to effectively learn distinguishable features for two-view matching,  via the flow ofgradients from consistently matched point-pairs.
+1. 引入 IO-Net.使用neurally-guided outlier-rejection scheme 作为辅助任务. While the keypoint network is fully self-supervised, the net-work is able to effectively learn distinguishable features for two-view matching,  via the flow of gradients from consistently matched point-pairs.
 
 2. 引入 KeyPointNet.在 UnsuperPoint 上改进了两点.
-First, we allow the keypoint location head to regress keypoint locations outside their corresponding cells, enabling keypoint matching near and across cell-boundaries. 
-Second, by taking advantage of subpixel convolutions to interpolate the descriptor feature-maps to a higher resolution, we show that we areable to improve the fine-grained keypoint descriptor fidelity and performance especially as they retain more fine-grained detail for pixel-level metric learning in the self-supervised regime.
+	1. 改进了 kp 位置的回归头,现在 kp 的位置是可以超出 cell 的,不受 cell 的边界影响.
+	2. 使用像素混洗来上采样提升描述符性能
 
 ## 相关工作
 比较亮眼的工作是2019年的 UnsuperPoint.该工作在每个 cell 内预测一个点.但是我们发现这个并非最优方案,尤其点临近 cell 的边界.Self-Improving Visual Odometry首次使用 CNN 来估计2D 关键点,并基于逆反射设计了一堆方法来分辨关键点的稳定性,以此作为信号来训练模型.因为这个不是可微的,所以没法实现 end2end. 而本文的 IO-Net 是可微的,且显示的使用了一个额外的代理监督信号来匹配关键点对,关键点对是  KeyPointNet 识别出来的.
@@ -49,7 +51,7 @@ $$
 >![unsuperpoint_fig3](../Attachments/unsuperpoint_fig3.png)
 >在本文中,下方 wrapped image 是 Target Image,上面是 source image 源图片
 
-**注意重点来了**:
+**注意重点来了**:   
 原始 unsuperpoint是不允许预测的关键点超出 cell 的边界的.这里本文就提出了一个新方法,对关键点进行聚合允许其超出边界.我们使用以下函数将相对于 cell 的偏移 $[u^{\prime}_s,v^{\prime}_s]$ 映射到输入图片的座标系中. 
 $$
 [v_i,u_i]=[row^{center}_i,col^{center}_i]+[v^{\prime}_i,u^{\prime}_i] \frac{\sigma_1(\sigma_2-1)}{2} 
