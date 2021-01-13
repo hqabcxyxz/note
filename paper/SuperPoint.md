@@ -54,6 +54,48 @@ xs, ys = np.where(heatmap >= self.conf_thresh) # Confidence threshold.
 ### 3.3.描述符解码器
 先输出一个 $H_c*W_c*D$ 的张量,在通道上进行 L2 归一化,然后用双三次线性插值到原始大小.
 
+### 3.4.损失函数
+![superpoint_fig2](../Attachments/superpoint_fig2.png)
+主要由兴趣点检测器 loss $L_p$ 和描述符 loss $L_d$构成.训练过程如图2c,最终 Loss 如下:
+$$
+L(X,X',D,D';Y,Y',S)=L_p(X,Y)+L_p(X',Y')+\lambda L_d(D,D',S)  \tag{1}
+$$
+
+**关于位置损失:**  
+$$
+L_p(X,Y)=\frac{1}{H_c W_c} \sum_{h=1,w=1}^{H_c,W_c} l_p(x_{hw};y_{hw})   \tag{2}
+$$
+
+$$
+l_p(x_{hw};y)=-log(\frac{exp(x_{hwy})}{\sum_{k=1}^{65} exp(x_{hwk})})   \tag{3}
+$$
+
+这里实际上就是将输入图片A进行变换得到B图片,然后B图片经过网络得到的描述符和点位置作为label,然后在点位置的处理上,A图片的点输出和B做交叉熵.具体点就是:
+假定每个 cell 上都会有一个潜在 kp,然后A输出一个通道65的 tensor,在后64通道上进行 softmax,这样通道维上每一位代表了该像素在 cell 中是 kp 的概率,而第0通道指示了该 cell 有无 kp.  这显然就是一个经典的分类问题,所以可以直接拿在输出结果和 label 做交叉熵就好.  
+原始论文中还有一个细节就是:
+>If two ground truth corner positions land in the same bin then we randomly select one ground truth corner location.
+
+**关于描述符损失**
+$$
+L_d(D,D',S)=\frac{1}{(H_c W_c)^2} \sum_{h=1,w=1}^{H_c,W_c} \sum_{h'=1,w'=1}^{H_c,W_c} l_d(d_{hw},d'_{h'w'};s_{hwh'w'}),   \tag{5}
+$$
+
+$$
+l_d(d,d';s)=\lambda_d*s*max(0,m_p-d^Td')+(1-s)*max(0,d^Td'-m_n)    \tag{6}
+$$
+
+这里$d$代表的是描述符向量,$S$代表一个矩阵,假设图A中 cell 有$N_a$个,图B中有$N_b$个,那么$S$大小为$N_a*N_b$,其元素$s_{ij}$表示了图片A中i cell和图片B中j cell是否对应,对应就是1,否则0.判断公式如下:
+$$
+s_{hwh'w'}= 
+\begin{cases} 
+1, & \text {if $||\hat{Hp_{hw}}-p_{h'w'}|| \leq8$} \\ 
+0, & \text{otherwise} 
+\end{cases}
+\tag{4}
+$$
+即取 cell 中心座标为$p$,图片A到B的变换为$H$,然后将A中 cell 的中心像素座标经过$H$变换到B图片座标系中,AB间 cell 中心像素座标小于8视为可以配对上,大于8为对不上.这里8正好是一个cell的大小.   
+这里的损失函数用了一个 [hinge loss](../DL_knowlege/hinge%20loss.md)
+
 ## 4.Synthetic 预训练
 ### 4.1.Synthetic Shapes 数据集
 ![fig4](../Attachments/superpoint_fig4.png)
