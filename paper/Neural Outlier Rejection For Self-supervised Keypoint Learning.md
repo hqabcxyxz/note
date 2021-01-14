@@ -1,5 +1,6 @@
 #自监督
-#单应性估计 #图像配准
+#单应性估计 
+#图像配准
 
 [toc]
 
@@ -15,7 +16,7 @@
 1. 引入了 IO-Net, 用来做自监督的关键点检测,描述和配对
 2. 引入了 KeyPointNet,主要用来做关键点检测和描述
 
-本文通过设计了局部关键点聚合来避免空间离散化导致的一些问题.通过一个像素混洗上采样来提升描述符的性能.
+本文通过设计了局部关键点聚合来避免空间离散化导致的一些问题.通过一个像素混洗上采样来提升描述符的性能.  
 We design the network to allow local keypoint aggregation to avoid artifacts due to spatial discretizations commonly used for this task, and we improve fine-grained keypoint descriptor performance by taking advantage of efficient sub-pixel convolutions to upsample the descriptor feature-maps to a higher operating resolution.
 
 ## 引言
@@ -83,7 +84,7 @@ $$
 置信度损失函数 $L_{score}$ 在设计时有两个出发点:
 1. 同一对点的分数应该尽量一致
 2. 同一对点靠得越近,分数应该越高,表示这类点更加可能是一对稳定的关键点.
-受 unsuperpoint 启发,使用了如下损失函数:  
+受 [UnsuperPoint](UnsuperPoint.md) 启发,使用了如下损失函数:  
 $$
 L_{score}=\sum_i [\frac{(s_i+\hat{s}_i)}{2} \cdot (d(p_i,\hat{p}_i)-\bar{d})+(s_i-\hat{s}_i)^2]  \tag{4}
 $$

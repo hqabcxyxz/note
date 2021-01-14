@@ -154,7 +154,7 @@ c_{ij}=
 \tag{14}
 $$ 
 
-[hinge loss](../DL_knowlege/hinge%20loss.md)将利用正边界$m_p$和负边界$m_n$来计算? 后面看代码这m是咋来的吧.
+[hinge loss](../DL_knowlege/hinge%20loss.md)将利用正边界$m_p$和负边界$m_n$来计算
 
 $$
 L^{desc}=\sum^{M^A}_{i=1} \sum^{M^B}_{j=1} l^{desc}_{ij}
