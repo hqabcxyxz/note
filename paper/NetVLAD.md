@@ -1,0 +1,1 @@
+可以参见:http://www.liuxiao.org/2019/02/%e8%ae%ba%e6%96%87%e7%ac%94%e8%ae%b0%ef%bc%9anetvlad-cnn-architecture-for-weakly-supervised-place-recognition/

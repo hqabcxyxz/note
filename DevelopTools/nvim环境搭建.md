@@ -3,9 +3,11 @@
 **安装之前需要卸载之前 apt 安装的 nvim**  
 仅在 ubuntu18.04 测试,下载最新的源码,然后解压,进入目录,执行
 ```bash
+git clone https://github.com/neovim/neovim.git
+cd neovim
 sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
 
-make CMAKE_BUILD_TYPE=Release
+sudo make CMAKE_BUILD_TYPE=Release
 sudo make install
 ```   
 
@@ -15,6 +17,7 @@ sudo make install
 ```bash
 sh -c 'curl -fLo "${XDG\_DATA\_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \\
  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
 ```
 
 # 环境搭建
