@@ -4,6 +4,11 @@
 
 # QATM: Quality-Aware Template Matching For Deep Learning
 
+- 论文: https://arxiv.org/abs/1903.07254
+- code:
+	- https://colab.research.google.com/drive/1PS5pNAkpeZMHLN3GJFblzWLgZEWyE52r?usp=sharing
+	-  https://github.com/kamata1729/QATM\_pytorch.git
+
 ## 摘要
 我们提出的QATM是可训练的,可以轻易插入其他深度学习网络.我们评价匹配对的质量( quality )是使用软排名,因此针对不同的匹配场景,比如1对1,1对N,N对N,这个 quality 的值是不同的.和传统方法的对比实验显示了, QATM SOTA.
 
