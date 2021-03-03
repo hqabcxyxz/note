@@ -2,7 +2,7 @@
 #openvino
 
 [toc]
-# Optimization Guide - OpenVINO™ Toolkit
+# Optimization Guide - OpenVINO Toolkit
 
 
 [原文](https://docs.openvinotoolkit.org/cn/latest/openvino_docs_optimization_guide_dldt_optimization_guide.html)
