@@ -19,3 +19,4 @@
 具体可以参考官方页面,注意一点是,官方默认调用系统的python pip.配置文件本质就是安装一堆python包,因此可以自己创建conda 环境然后安装requirement.txt
 #  参考
 - https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html
+- https://oldpan.me/archives/openvino-first-try
