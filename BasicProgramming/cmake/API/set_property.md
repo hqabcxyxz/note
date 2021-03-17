@@ -1,8 +1,6 @@
-#cmake
+#cmake   
 
-[toc]
 
-# set_property
 ```cmake
 set_property(<GLOBAL                      |
               DIRECTORY [<dir>]           |

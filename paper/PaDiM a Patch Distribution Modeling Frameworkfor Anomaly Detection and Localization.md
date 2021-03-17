@@ -3,6 +3,8 @@
 [toc]
 
 # PaDiM: a Patch Distribution Modeling Framework for Anomaly Detection and Localization
+- 论文: https://arxiv.org/pdf/2011.08785
+- code: https://github.com/xiahaifeng1995/PaDiM-Anomaly-Detection-Localization-master
 
 ## 摘要
 PaDiM 使用于预先训练的 CNN 来进行分块嵌入,然后使用多元高斯分布来得到正常类别的概率表示.此外,还利用了 CNN 不同层的语义来更高的定位缺陷.
