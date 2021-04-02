@@ -50,7 +50,8 @@ with trt.Builder(TRT_LOGGER) as builder, builder.create_network() as network:
 
 这里流程就是使用上一步的 `Logger` 创建一个 `tnesorrt.Builder` 实例,然后使用这个实例创建一个 `INetworkDefinition` 实例.然后使用 `INetworkDefinnition` 实例设置输入,添加层构建网络,然后标记输出.
 
-# 构建引擎
+# 构建引擎 `ICudaEngine`
+即得到一个[`ICudaEngine`](https://docs.nvidia.com/deeplearning/tensorrt/api/python_api/infer/Core/Engine.html#tensorrt.ICudaEngine)对象,这个对象是用来推理的.可以使用`[]`来索引,索引返回相应的绑定名称.当使用 字符串来索引的时候,返回的则是对应名称的索引.
 ```python
 with trt.Builder(TRT_LOGGER) as builder, builder.create_builder_config() as config:
     config.max_workspace_size = 1 << 20 # This determines the amount of memory available to the builder when building an optimized engine and should generally be set as high as possible.
@@ -70,3 +71,39 @@ with open(“sample.engine”, “wb”) as f:
 with open(“sample.engine”, “rb”) as f, trt.Runtime(TRT_LOGGER) as runtime:
 		engine = runtime.deserialize_cuda_engine(f.read())
 ```
+
+# 进行推理
+## 分配设备和 buffer
+参照英伟达官方示例,这里展示假定固定大小,单输入输出.输入时,
+```python
+# Determine dimensions and create page-locked memory buffers (i.e. won't be swapped to disk) to hold host inputs/outputs.
+#volum计算输入输出大小,pagelocked_empty设置设备的缓冲区
+	  h_input = cuda.pagelocked_empty(trt.volume(context.get_binding_shape(0)), dtype=np.float32)
+	  h_output = cuda.pagelocked_empty(trt.volume(context.get_binding_shape(1)), dtype=np.float32)
+	  # Allocate device memory for inputs and outputs.
+	  # 分配cuda显存
+	  d_input = cuda.mem_alloc(h_input.nbytes)
+	  d_output = cuda.mem_alloc(h_output.nbytes)
+	  # Create a stream in which to copy inputs/outputs and run inference.
+	  stream = cuda.Stream()
+```
+这里关于内存的设置可以参考[锁页内存](../CUDA/锁页内存.md)  
+
+## 拷贝 buffer
+将内存中的缓冲区内存(锁页内存)异步的拷贝到 cuda 显存上.执行推理,将推理结果拷贝会内存中的锁页内存上,等待拷贝完成.
+
+```python
+with engine.create_execution_context() as context:
+		# Transfer input data to the GPU.
+		cuda.memcpy_htod_async(d_input, h_input, stream)
+		# Run inference.
+		context.execute_async_v2(bindings=[int(d_input), int(d_output)], stream_handle=stream.handle)
+		# Transfer predictions back from the GPU.
+		cuda.memcpy_dtoh_async(h_output, d_output, stream)
+		# Synchronize the stream
+		stream.synchronize()
+		# Return the host output. 
+return h_output
+```
+
+注意一个引擎可以有多个执行上下文.  python版的推理可以使用 `np.copyto` 直接将一个 array 拷贝到另外一个array.
