@@ -5,7 +5,7 @@
 
 # 安装依赖并编译
 ```bash
-sudo apt install libncurses5-dev libncursesw5-dev
+sudo apt install libncurses5-dev libncursesw5-dev 
 cd global-6.6
 ./configure
 make

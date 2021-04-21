@@ -84,8 +84,8 @@ sudo n stable
 nvim 安装参见 [nvim环境搭建](../DevelopTools/nvim%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.md)
 
 ```bash
-sudo pip install nvim
-sudo pip3 install nvim
+sudo pip install pynvim
+sudo pip3 install pynvim
 
 sudo apt install xclip
 
@@ -108,3 +108,5 @@ sudo apt install \
 make -j8
 sudo make install
 ```
+
+gtags  安装见 [ubuntu  编译安装gtags](ubuntu%20%20编译安装gtags.md)
