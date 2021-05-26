@@ -109,3 +109,22 @@ $$
 **评价方法**
 略
 
+### 4.1 从头训练自编码器
+略
+
+### 4.2 经验性分析
+对于预训练模型,我们参照[(Su et al. 2018)](https://proceedings.neurips.cc/paper/2018/hash/13f3cf8c531952d72e5847c4183e6910-Abstract.html)的无监督设定,使用了 $||cos(a_1,a_2)-cos(b_1,b_2)||^2_2$ 作为代价函数来最小化余弦相似度之间的差异.这里 $a$ 是预训练模型最后一层输出的连续特征变量, $b$ 是对应的二进制代码.  
+
+**连续特征是如何分布的:** 图5 显示了我们在 Cifar-10(I) 上训练4位码的网络时可视化出连续特征变量U在每个维度上的直方图分布.很明显比起 Cao et al.2017 和 Su et al.2018 的 sign layer,本文方法出来的结果更加贴近 half-half 分布.
+![fig5](../Attachments/DUIHMBE_Fig5.png)
+> y轴对应4位码的维数.x轴显示了连续变量U.z轴是有多少图片包含这个连续变量.
+
+**单个哈希码的分布是怎样的:** 图4(a) 显示了16位哈希码中每个位置 +1 在所有图片中出现的概率. 可以看到 sign layer 的分布是一个非平均分布,有部分位置几乎不可能是 +1.由于在整个数据集上这些位置是几乎确定的,因此这些位置是可以省略的.相比之下,本文方法呈一个平均分布,可以充分利用编码容量.  
+![fig4](../Attachments/DUIHMBE_fig4.png)
+
+**其他哈希编码策略:** 图4(a)中右图显示了 continuous relaxation layer,smoothed continuation layer ,sign layer 和 Bi-half layer 在 Cifar-10(I) 训练32和64位编码的性能. sign layer 比其他两种略好的原因可能是它可以有效保持编码离散这个约束.当然本文方法更好.  
+
+**bi-half layer 的变体:** bi-half layer 的一个变体是添加一个平移项 $t$ 在 sign 函数上,即 $sign(u+t)$.为了验证这个方法,我们估计了每个 batch 的中位数.并在推理使用一个指数移动平均数(exponential moving average,EMA)来替代这个中位数.图4(b) 显示了我们在 Flickr25k 上的实验结果.左图显示了在不同的批量大小上,EMA 是如何随着训练 epoch 进行变化的.我们的学习率和 batch size 是近似线性缩放的.小的 batch size 更容易导致 EMA 不稳定.中间图显示了 bi-half 方法和不同 batch 下变体方法的差异,编码长度是16.增大 batch 可以显著提升变体方法的性能.最后结论还是 bi-half 最棒棒.
+
+
+
