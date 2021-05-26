@@ -1,0 +1,2 @@
+- https://hsinjhao.github.io/2019/05/22/KL-DivergenceIntroduction/
+- http://www.fenghz.xyz/KL-Divergency-Description/
