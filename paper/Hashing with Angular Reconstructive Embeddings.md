@@ -66,6 +66,8 @@ $$
 s.t. B \in \{-1,1\}^{n \times r},1^TB=0,B^TB=nI_r,  \tag{5}
 $$
 
+**注:**$1^TB=0$ 这里表明 $B$ 中1和-1是一半一半.
+
 这里$10$是一个列向量,其所有元素为1,$I_r$是单位矩阵.上诉问题是一个高度非凸的,由于离散约束,难以优化.更进一步,平衡约束会进一步将这个问题变成一个 NP-Hard 问题. 接下来,我们将提出两个方法来放宽约束和目标函数来获得一个近似解.
 
 ### B. 解法
@@ -87,3 +89,82 @@ $$
 \underset{W}{max} \frac{1}{2}Tr(W^TMW),  \\
 s.t. W^TW=I_r  \tag{8}
 $$
+这里 $M=X^T(XX^T)X+nX^TX$ ,$n$ 是一个用来权衡的超参数.本节松弛的目标函数类似SSH,不同之处再与将 SSH 中的两两相似矩阵 $S$ 换成了 $XX^T$,因此我们的方法可以看成是无监督的 SSH.对矩阵 M 进行特征值分解即可得到最佳投影矩阵 W.这与 PCA 寻求最大方差方向很像,不同在于我们使用了来自ARE的矩阵对协方差矩阵进行来调整.相比之下, ARE 使用一个无监督的方式来调整协方差矩阵,而 SSH 使用一个有监督的方式来调整协方差矩阵.但正交约束会逐步强制长的比特位选择一些低方法的方向,显然这会降低低位比特位的质量,为此,我们引入一个正则项来平衡这一点,我们将公式8改写为:
+$$
+\underset{W}{max}\frac{1}{2}Tr(W^TMW)-\frac{p}{2}||W^TW-I||_F^2  \tag{9}
+$$
+这里 $p$ 是一个正值.记 $Q=I+\frac{1}{p} M$.正如 $p>0$,很容易得到 Q也为正.我们对 Q 使用 Cholesky 分解得到 $Q=LL^T$,最终,我们可以得到非正交投影:
+$$
+W_{nonorth}=LU_c  \tag{10}
+$$
+这里 $U_c$ 是矩阵 $M$ 最大的 $c$ 个特征向量.
+
+#### 2) 离散解:
+参考文献[28],[41]中的因连续松弛条件导致的累计量化误差,本节,我们将探索不使用连续松弛条件来进行优化.我们将带有核函数的哈希函数定义如下:
+$$
+h(X)=sgn(f(X))  \tag{11}
+$$
+这里 $f(X)=\phi(X)P$ 是预测函数, $P=[p_1,...,p_r] \in R^{m \times r}$ 为协方差矩阵, $\phi(X)=[\phi(x_1),...,\phi(x_n)]^T$ 为满足 Mercer 条件的任何核函数.本文,我们使用高斯核函数$\phi(x)=[exp(||x-a_1||^2/\sigma),...exp(||x-a_m||^2/\sigma)]^T \in R^{m \times 1}$, $\{ a_j \}^m_{j=1}$ 是从训练样本中选出的 m 个锚点, $\sigma$ 是核宽度.  
+
+则,我们需要解决的问题如下:
+$$
+\underset{B,P,R}{min}||\frac{1}{r}BB^T-XX^T||^2_F+ \gamma||B- \phi (X)PR||^2_F,  \\
+s.t. B \in \{ -1,1 \}^{n \times r}, 1^TB=0,B^TB=nI_r,R^TR=I_r,    \tag{12}
+$$
+这里 $\gamma$ 是一个用来权衡的超参数.公式12中第一项可以认为是需要最小化的重建误差,第二项是确保预测函数 $f(X)$ 可以以最小的量化误差来预测目标二值码 B where the functionality of the orthogonal transformation $R \in R^{r \times r}$ is analogous to that of ITQ.
+
+公式12难以直接优化,为此,我们提出来一个易于处理的优化方法来解决以下四个问题.  
+
+##### P-Subproblem: 
+对公式添加一个正则项 $P$ 来防止过拟合是很有效的.通过修正 B 和 R.我们将问题12改写如下:
+$$
+\underset{P \in R^{m \times r}}{min} \lambda||B-\phi(X) RP ||^2_F+\mu||P||^2_F,  \tag{13}
+$$
+这里 $\mu$ 是一个可调参数.这里公式13是一个正则化的最小二乘问题,其解析解为:
+$$
+P=( \phi(X)^T\phi(X)+\frac{\mu}{\lambda}I_m)^{-1}\phi(X)^T BR.  \tag{14}
+$$
+
+##### R-Subproblem:
+通过修正 B 和 P,公式12可以些微:
+$$
+\underset{R}{max} Tr(RB^T \phi(X)P), \\
+s.t. R^TR=I_r   \tag{15}
+$$
+问题15是一个经典的[Orthogonal Procrustes problem](https://www.zhihu.com/question/31167170/answer/1490641192).我们对 $r \times r$ 大小的矩阵 $B^T \phi(X)P$ 进行奇异值分解为 $S \Omega \hat{S}^T$.我们可以得到 $R=\hat{S}{S}^T$.
+
+##### B-Subproblem:
+通过无视常数项,修正 P 和 R,公式12改写如下:
+$$
+\underset{B}{min} Tr(-\frac{1}{r} BB^TXX^T-\lambda \phi(X)PRB^T),   \\
+s.t. B \in \{-1,1\}^{n \times r}, 1^TB=0,B^TB=nI_r.  \tag{16}
+$$
+受[28]启发,我们通过引入辅助变量 $Z$ 来松弛问题16:
+$$
+\underset{B,Z}{min} Tr(-\frac{1}{r}BB^TXX^T-\lambda \phi(X)PRB^T)+\frac{\iota}{2}||B-Z||^2_F,  \\
+s.t. B \in \{-1,1\}^{n \times r}, 1^TZ=0,Z^TZ=nI_r.  \tag{17}
+$$
+
+这里 $\iota$ 是一个可调参数.通过修正 $Z$, 问题17 可以转化为:
+$$
+\underset{B}{min} Tr(\frac{1}{r}B^TXX^TB+\lambda B^T \phi(X)PR + \iota B^TZ),  \\
+s.t. B \in \{-1,-1\}^{n \times r}  \tag{18}
+$$
+我们直接在汉明空间中无视离散二进制约束 $B \in \{-1,1\}^{n \times r}$ 来优化 $B$.  
+
+将公式18记作 $g(B)$.显然对称矩阵 $XX^T$ 是半正定的.根据最小化极大值算法,我们使用一个简单的迭代上升的方法.在第 $j$ 次迭代,我们定义一个局部函数 $\hat{g}_j(B)$,使得 $g(B)$ 在点 $B^{(j)}$ 呈线性,并将 $\hat{g}_j(B)$ 作为 $g(B)$ 离散优化时的代理函数.给定 $B^{(j)}$ ,那么下一个离散点为 $B^{(j+1)} \in arg max
+_{b \in \{-1,1\}^{n \times r}} \hat{g}_j(B):=g(B^{(j)})+ \langle \nabla g(B^{(j)},B-B^{(j)} \rangle$.则 $\hat{g}_j(B)=(g(B^{(j)})- \nabla g(B^{(j)})B^{(j)})+ \nabla g(B^{(j)}) B$. 将第一项视为常数,则当:
+$$
+B^{(j+1)}=sgn( \nabla g(B^{(j)}))  \tag{19}
+$$
+$\hat{g}_j(B)$ 取得最大值.  
+
+由公式18,我们可得$\nabla g(B^{(j)}) = (2X(X^TB^{(j)}))/r + \lambda \phi (X) PR + \iota Z$
+
+##### Z-Subproblem:  
+对于公式17,修正B,我们得到:
+$$
+\underset{Z \in R^{n \times r}}{max} Tr(B^TZ),   \\
+s.t. 1^TZ=0,Z^TZ=nI_r,  \tag{20}
+$$
+
