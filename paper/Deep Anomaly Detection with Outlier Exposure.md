@@ -76,14 +76,22 @@ H=- \sum_x p(x) log q(x)  \tag{1}
 $$
 这里 $p(x)$ 是平均分布,q(x) 是 softmax 分布,则上式为:
 $$
-H=- \sum_N \frac{1}{N} log \frac{e^{x_j}}{\sum^N_{i=1}e^{x_i}}  \\
-= -\frac{\sum_N log \frac{e^{x_j}}{\sum^N_{i=1}e^{x_i}} }{N}  \\
-= -\frac{\sum_N (log e^{x_j}-log{\sum^N_{i=1}e^{x_i}} )}{N}  \\
-= -( \frac{\sum^N x_j}{N}-\frac{\sum^Nlog{\sum^N_{i=1}e^{x_i}}}{N})  \\
-= -(E(x)-log{\sum^N_{i=1}e^{x_i}})
+\begin{align}
+H&=- \sum_N \frac{1}{N} log \frac{e^{x_j}}{\sum^N_{i=1}e^{x_i}}  \\
+&= -\frac{\sum_N log \frac{e^{x_j}}{\sum^N_{i=1}e^{x_i}} }{N}  \\
+&= -\frac{\sum_N (log e^{x_j}-log{\sum^N_{i=1}e^{x_i}} )}{N}  \\
+&= -( \frac{\sum^N x_j}{N}-\frac{\sum^Nlog{\sum^N_{i=1}e^{x_i}}}{N})  \\
+&= -(E(x)-log{\sum^N_{i=1}e^{x_i}})
+\end{align}
 $$
 
 
 对于每个分布 $D_{out}^{test}$ 我们不调整我们的超参数,所以 $D_{out}^{test}$ 是完全未知的.这里系数 $\lambda$ 是通过验证集 $D_{out}^{val}$ 确定的.在视觉任务中,我们使用 $\lambda =0.5$ 而在 NLP 中,使 $\lambda=1$,不同于以往 OOD 检测方法对网络进行微调,我们使用 $\lambda$ 对分类精度的影响是微乎其微的.
 
 几乎所有的视觉任务,我们都对 WResNet 进行微调 10轮.对于 NLP,我们训练一个2层 GRU 5轮,然后带上 OE 微调2轮. CIFAR 系列数据集使用的离群暴露数据集是 Tiny Images, 而 Tiny ImageNet和 Place365 离群暴露数据集是 ImageNet-22K. NLP 离群暴露数据集是 WikiText-2.
+
+**置信度分支**  
+最近提出了一项 OOD 检测技术,将 OOD 分支 $b:X \to [0,1]$ 添加到深度网络.仅使用 $D_{in}$ 的样本分类,这个分支会估计输入的网络置信度.我们使用其公开代码训练了一个 40-4 Wide ResNet 分类网络.在网络原始优化目标上添上了 $0.5 E_{{x} \backsim D_{out}^{OE}} [logb(x)]$.根据表3,可以看出置信度分支改善了 MSP 检测器,再添加了 OE 之后,置信度可以更加有效的检测异常了.
+
+**人工合成离群点**  
+OE 技术可以有效利用真实数据集的简单性,也可以用来生成合成离群点.我们对图片添加了噪声来生成离群点并将之作为离群点,但是分类器很快学会了这个模式,但其检测新的 OOD 的性能甚至没有之前的好.比较好的方法来自 Lee et al.(2018) ,他们在分类器的决策函数边界使用GAN来生成合成样本并将之用于训练,分类器被鼓励在这些合成样本上有较低的 maximum softmax probability.相比之下,我们从多样的数据集中挖掘异常样本的做法更加简单且足以用来提高 OOD 检测器性能.
